@@ -199,4 +199,21 @@ return [
 
         'store' => 'default',
     ],
+
+    /* -----------------------------------------------------------------
+     | Jolshiri module · ability matrix
+     |------------------------------------------------------------------
+     | Edit this single place whenever you add a new module or action.
+     | Seeder/commands & UI will read from here.
+     */
+    'modules' => [
+        // 'module' => ['ability', ...],
+        'post'  => ['view', 'create', 'update', 'delete'],
+        'order' => ['view', 'create', 'update', 'delete', 'export'],
+        'user'  => ['view', 'create', 'update', 'delete', 'impersonate'],
+        'roles'  => ['view', 'create', 'update', 'delete', 'impersonate'],
+        // add more modules later
+    ],
+
+
 ];

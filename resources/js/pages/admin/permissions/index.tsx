@@ -1,24 +1,98 @@
-import { Head, Link } from '@inertiajs/react';
-import type { PageProps } from '@/types';
-import AppLayout from '@/layouts/app-layout';            // ✅ add layout
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Pagination } from '@/components/ui/pagination';
-import type { Permission, Paginated } from '@/types/models';
-import { Plus } from 'lucide-react';
+import { Head, Link } from "@inertiajs/react"
+import type { PageProps } from "@/types"
+import AppLayout from "@/layouts/app-layout"
+import type { Permission, Paginated } from "@/types/models"
 
-// Page-specific props come under PageProps generic
-type Props = PageProps<{ permissions: Paginated<Permission> }>;
+import { useState, useMemo } from "react"
+import { Plus, MoreVertical, Search } from "lucide-react"
+import { ColumnDef } from "@tanstack/react-table"
+
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { DataTable } from "@/components/ui/DataTable"
+import { Pagination } from "@/components/ui/pagination"
+
+type Props = PageProps<{ permissions: Paginated<Permission> }>
 
 export default function PermissionIndex({ permissions }: Props) {
+  /* ───────────────────── State ───────────────────── */
+  const [query, setQuery] = useState("")
+
+  /* ───────────────────── Data ────────────────────── */
+  const filtered = useMemo(() => {
+    if (!query.trim()) return permissions.data
+    const q = query.toLowerCase()
+    return permissions.data.filter(
+      p =>
+        p.name.toLowerCase().includes(q) ||
+        p.guard_name.toLowerCase().includes(q)
+    )
+  }, [query, permissions.data])
+
+  /* ───────────────────── Columns ─────────────────── */
+  const columns: ColumnDef<Permission>[] = [
+    {
+      accessorKey: "index",
+      header: "#",
+      cell: ({ row }) =>
+        row.index + 1 + (permissions.current_page - 1) * permissions.per_page,
+    },
+    { accessorKey: "name", header: "Name" },
+    { accessorKey: "guard_name", header: "Guard" },
+    {
+      id: "actions",
+      header: " ",
+      enableSorting: false,
+      cell: ({ row }) => {
+        const perm = row.original
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href={route("admin.permissions.edit", perm.id)}>
+                  Edit
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                asChild
+                onClick={() =>
+                  confirm(`Delete "${perm.name}"?`) &&
+                  route().delete(route("admin.permissions.destroy", perm.id))
+                }
+              >
+                <span className="text-red-600">Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
+
+  /* ───────────────────── View ────────────────────── */
   return (
-    <AppLayout> {/* ← wraps everything */}
+    <AppLayout>
       <Head title="Permissions" />
 
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Permissions</h1>
+      {/* Page header */}
+      <div className="mb-6 flex flex-col sm:flex-row justify-between gap-4">
+        <h1 className="text-2xl font-bold tracking-tight">Permissions</h1>
 
-        <Link href={route('admin.permissions.create')}>
+        <Link href={route("admin.permissions.create")}>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Create Permission
@@ -26,51 +100,30 @@ export default function PermissionIndex({ permissions }: Props) {
         </Link>
       </div>
 
-      <Card>
+      {/* Search bar */}
+      <div className="mb-4 flex items-center gap-2">
+        <Search className="h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search permissions…"
+          className="max-w-sm"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+        />
+      </div>
+
+      {/* Table card */}
+      <Card className="shadow-sm border rounded-lg">
         <CardContent className="p-0">
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-muted text-muted-foreground">
-              <tr>
-                <th className="px-4 py-2 text-left">#</th>
-                <th className="px-4 py-2 text-left">Name</th>
-                <th className="px-4 py-2 text-left">Guard</th>
-                <th className="px-4 py-2 text-left">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {permissions.data.map((perm, i) => (
-                <tr key={perm.id} className="hover:bg-gray-100">
-                  <td className="px-4 py-2">
-                    {i + 1 + (permissions.current_page - 1) * permissions.per_page}
-                  </td>
-                  <td className="px-4 py-2">{perm.name}</td>
-                  <td className="px-4 py-2">{perm.guard_name}</td>
-                  <td className="space-x-2 px-4 py-2">
-                    <Link href={route('admin.permissions.edit', perm.id)}>
-                      <Button size="sm" variant="outline">Edit</Button>
-                    </Link>
-
-                    <Link
-                      as="button"
-                      method="delete"
-                      href={route('admin.permissions.destroy', perm.id)}
-                      onBefore={() => confirm('Are you sure?')}
-                    >
-                      <Button size="sm" variant="destructive">Delete</Button>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ScrollArea className="w-full">
+            <DataTable columns={columns} data={filtered} />
+          </ScrollArea>
         </CardContent>
       </Card>
 
-      <div className="mt-4">
-        {/* uses your reusable Pagination component */}
+      {/* Laravel / Inertia pagination */}
+      <div className="mt-6">
         <Pagination links={permissions.links} />
       </div>
     </AppLayout>
-  );
+  )
 }
