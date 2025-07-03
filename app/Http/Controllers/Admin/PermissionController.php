@@ -64,4 +64,6 @@ class PermissionController extends Controller
         $permission->delete();
         return redirect()->back()->with('success', 'Permission deleted.');
     }
+
+
 }
