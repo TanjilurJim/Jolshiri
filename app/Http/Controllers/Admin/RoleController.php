@@ -1,74 +1,89 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Role;
-use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\QueryBuilder;
+use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleController extends Controller
 {
-    public function index(Request $request)
-
-
+    /* ------------ READ ------------ */
+    public function index()
     {
-
-        $roles= \Spatie\Permission\Models\Role::select('id', 'name')->paginate(10);
-      
         return Inertia::render('admin/roles/index', [
-            'roles' => $roles,
+            'roles' => Role::withCount('permissions')->paginate(20),
         ]);
     }
 
-    
+    /* ------------ CREATE ------------ */
     public function create()
     {
-        return Inertia::render('admin/roles/create');
+        return $this->formPage(new Role);
     }
 
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name',
-            'permissions' => 'array',
-            'permissions.*' => 'string|exists:permissions,name',
-        ]);
-
-        Role::create(['name' => $validated['name']]);
-
-        if (!empty($validated['permissions'])) {
-        $role->syncPermissions($validated['permissions']); // if using spatie/laravel-permission
-    }
-        
-        return redirect()->route('admin.roles.index')->with('success', 'Role created.');
-        return redirect()->route('admin.roles.index')->with('success', 'Role created successfully.');
-    }
-
+    /* ------------ EDIT ------------ */
     public function edit(Role $role)
     {
-        return Inertia::render('Admin/Roles/Edit', [
-            'role' => $role,
-        ]);
+        return $this->formPage($role->load('permissions'));
     }
 
+    /* ------------ STORE ------------ */
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'name'          => ['required', 'string', 'unique:roles,name'],
+            'permissionIds' => ['array'],
+        ]);
+
+        $role = Role::create(['name' => $data['name']]);
+        $role->syncPermissions($data['permissionIds'] ?? []);
+
+        // refresh Spatie cache
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        return redirect()->route('admin.roles.index')
+            ->with('flash.success', 'Role created');
+    }
+
+    /* ------------ UPDATE ------------ */
     public function update(Request $request, Role $role)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,'.$role->id,
+        $data = $request->validate([
+            'name'          => ['required', 'string', "unique:roles,name,{$role->id}"],
+            'permissionIds' => ['array'],
         ]);
 
-        $role->update($validated);
+        $role->update(['name' => $data['name']]);
+        $role->syncPermissions($data['permissionIds'] ?? []);
 
-        return redirect()->route('admin.roles.index')->with('success', 'Role updated successfully.');
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        return back()->with('flash.success', 'Role updated');
     }
 
-    public function destroy(Role $role)
+    /* ------------ Re-usable page helper ------------ */
+    private function formPage(Role $role)
     {
-        $role->delete();
+        // pull matrix & flatten perms for front-end
+        $matrix      = config('permission.modules');
+        $permissions = Permission::all()->map(function ($perm) {
+            [$module, $ability] = explode('.', $perm->name);
+            return [
+                'id'      => $perm->id,
+                'module'  => $module,
+                'ability' => $ability,
+            ];
+        });
 
-        return redirect()->route('admin.roles.index')->with('success', 'Role deleted successfully.');
+        return Inertia::render('admin/roles/form', [
+            'role'            => $role,
+            'matrix'          => $matrix,                   // { module: [ability,…] }
+            'permissions'     => $permissions,              // flat list with ids
+            'selectedIds' => $role->permissions->pluck('id')->values()->all(),
+            'isEdit'          => $role->exists,
+        ]);
     }
 }
