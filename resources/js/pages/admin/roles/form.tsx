@@ -6,17 +6,18 @@ import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
+import { toast } from 'react-hot-toast'; // ✅ toast already wired in AppLayout
 
 interface Props {
     role: { id?: number; name?: string };
-    matrix: Record<string, string[]>; // e.g. { post:['view','create'] }
+    matrix: Record<string, string[]>;
     permissions: { id: number; module: string; ability: string }[];
     selectedIds: number[];
     isEdit: boolean;
 }
 
 export default function RoleForm({ role, matrix, permissions, selectedIds, isEdit }: Props) {
-    /* ---------- turn selectedIds into a plain array just in case ---------- */
+    /* ───────────── state ───────────── */
     const initialIds = Array.isArray(selectedIds) ? selectedIds : Object.values(selectedIds);
 
     const { data, setData, post, put, processing, errors } = useForm<{
@@ -27,40 +28,48 @@ export default function RoleForm({ role, matrix, permissions, selectedIds, isEdi
         permissionIds: initialIds,
     });
 
+    const permIndex = new Map(permissions.map((p) => [`${p.module}.${p.ability}`, p.id] as [string, number]));
+
+    const toggle = (id: number) => {
+        const next = data.permissionIds.includes(id) ? data.permissionIds.filter((i) => i !== id) : [...data.permissionIds, id];
+        setData('permissionIds', next);
+    };
+
+    /* ───────────── submit ───────────── */
     const submit = (e: FormEvent) => {
         e.preventDefault();
         const url = isEdit ? route('admin.roles.update', role.id) : route('admin.roles.store');
-        (isEdit ? put : post)(url);
+
+        const rq = isEdit ? put : post;
+        rq(url, {
+            onSuccess: () => toast.success(isEdit ? 'Role updated 🎉' : 'Role created 🎉'),
+        });
     };
 
-    /* ---------- fast lookup map ---------- */
-    const permIndex = new Map(permissions.map((p) => [`${p.module}.${p.ability}`, p.id] as [string, number]));
-
-    /* ---------- toggle WITHOUT passing a callback ---------- */
-    const toggle = (id: number) => {
-        const next = data.permissionIds.includes(id) ? data.permissionIds.filter((i) => i !== id) : [...data.permissionIds, id];
-
-        setData('permissionIds', next); // passes VALUE not function
-    };
-
+    /* ───────────── view ───────────── */
     return (
         <AppLayout>
             <Head title={isEdit ? 'Edit Role' : 'Create Role'} />
 
-            <form onSubmit={submit} className="space-y-6">
-                {/* name */}
-                <div className="flex items-end gap-4">
-                    <label className="text-sm font-medium">Name</label>
+            <form onSubmit={submit} className="space-y-8" >
+                {/* role name */}
+                <div>
+                    <h2 className="mb-1 text-sm font-semibold text-muted-foreground">Role name</h2>
                     <Input
-                        id="name"
                         value={data.name}
                         onChange={(e) => setData('name', e.target.value)}
-                        className={`max-w-xs ${errors.name ? 'border-red-500' : ''}`}
+                        placeholder="e.g. Manager"
+                        className={`w-full border-b-2 focus:ring-0 focus:outline-primary ${errors.name ? 'border-red-500' : 'border-black'}`}
                     />
+                    {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
                 </div>
-                {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
 
-                {/* permissions */}
+                {/* permissions header */}
+                <div>
+                    <h2 className="text-sm font-semibold text-muted-foreground">Assign permissions to this role</h2>
+                </div>
+
+                {/* accordion */}
                 <Card>
                     <CardContent className="p-0">
                         <Accordion type="multiple" className="divide-y">
@@ -73,7 +82,7 @@ export default function RoleForm({ role, matrix, permissions, selectedIds, isEdi
                                                 const id = permIndex.get(`${module}.${ab}`)!;
                                                 const checked = data.permissionIds.includes(id);
                                                 return (
-                                                    <label className="flex items-center gap-2" key={id}>
+                                                    <label key={id} className="flex items-center gap-2 text-sm">
                                                         <Checkbox checked={checked} onCheckedChange={() => toggle(id)} />
                                                         <span className="capitalize">{ab}</span>
                                                     </label>
@@ -87,14 +96,17 @@ export default function RoleForm({ role, matrix, permissions, selectedIds, isEdi
                     </CardContent>
                 </Card>
 
-                <Button type="submit" disabled={processing}>
-                    {isEdit ? 'Update' : 'Create'}
-                </Button>
-                <Link href={route('admin.roles.index')}>
-                    <Button variant="ghost" type="button">
-                        Cancel
+                {/* actions */}
+                <div className="flex gap-4">
+                    <Button type="submit" disabled={processing}>
+                        {isEdit ? 'Update role' : 'Create role'}
                     </Button>
-                </Link>
+                    <Link href={route('admin.roles.index')}>
+                        <Button variant="ghost" type="button">
+                            Cancel
+                        </Button>
+                    </Link>
+                </div>
             </form>
         </AppLayout>
     );

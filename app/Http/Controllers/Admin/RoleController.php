@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -10,6 +11,14 @@ use Spatie\Permission\PermissionRegistrar;
 
 class RoleController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:roles.view')->only(['index', 'show']);
+        $this->middleware('permission:roles.create')->only(['create', 'store']);
+        $this->middleware('permission:roles.update')->only(['edit', 'update']);
+        $this->middleware('permission:roles.delete')->only(['destroy']);
+    }
     /* ------------ READ ------------ */
     public function index()
     {
@@ -61,7 +70,8 @@ class RoleController extends Controller
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        return back()->with('flash.success', 'Role updated');
+        return redirect()->route('admin.roles.index')
+            ->with('flash.success', 'Role created');
     }
 
     /* ------------ Re-usable page helper ------------ */
@@ -85,5 +95,20 @@ class RoleController extends Controller
             'selectedIds' => $role->permissions->pluck('id')->values()->all(),
             'isEdit'          => $role->exists,
         ]);
+    }
+    /* ------------ DELETE ------------ */
+    public function destroy(Role $role)
+    {
+        // If you want to forbid deleting certain core roles, add a guard here
+
+        if ($role->name === 'Super Admin') {
+            abort(403, 'You may not delete the Super Admin role.');
+        }
+
+        $role->delete();                                    // removes role + pivot rows
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();  // flush Spatie cache
+
+        return back()->with('flash.success', 'Role deleted');
     }
 }

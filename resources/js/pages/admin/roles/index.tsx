@@ -3,15 +3,15 @@ import type { PageProps } from '@/types';
 import type { Paginated, Role } from '@/types/models';
 import { Head, Link } from '@inertiajs/react';
 
-import { MoreVertical, Plus, Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/pagination';
 import { Skeleton } from '@/components/ui/skeleton';
+import { confirmDelete } from '@/lib/confirm';
+import { MoreVertical, Plus, Search } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 type Props = PageProps & { roles: Paginated<Role> };
 
@@ -114,6 +114,19 @@ export default function RoleIndex({ roles }: Props) {
                                                             </Link>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
+                                                            variant="destructive"
+                                                            onClick={() =>
+                                                                confirmDelete({
+                                                                    url: route('admin.roles.destroy', role.id), // ← role.id
+                                                                    title: `Delete "${role.name}"?`, // ← nicer title
+                                                                    successMsg: 'Role deleted', // toast on success
+                                                                })
+                                                            }
+                                                        >
+                                                            Delete
+                                                        </DropdownMenuItem>
+
+                                                        {/* <DropdownMenuItem
                                                             className="cursor-pointer rounded px-4 py-2 hover:bg-destructive/5 hover:text-destructive focus:bg-destructive/5 focus:text-destructive"
                                                             onClick={() =>
                                                                 confirm(`Delete "${role.name}"?`) &&
@@ -121,7 +134,7 @@ export default function RoleIndex({ roles }: Props) {
                                                             }
                                                         >
                                                             Delete
-                                                        </DropdownMenuItem>
+                                                        </DropdownMenuItem> */}
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </td>

@@ -28,6 +28,8 @@ return [
 
     ],
 
+    
+
     'table_names' => [
 
         /*
@@ -94,7 +96,27 @@ return [
          */
 
         'team_foreign_key' => 'team_id',
+
+
     ],
+
+    'super_admin' => [
+        'enabled'   => true,           // ← turn the feature on
+        'role_name' => 'Super Admin',  // ← the role that grants full access
+    ],
+
+
+     // ⬇️  ADD THIS
+    'register_middleware' => true,
+    //      ^ tells the service-provider to automatically add
+    //        the `permission`, `role`, and `role_or_permission`
+    //        aliases to Laravel’s router.
+
+    /*
+     * When set to true, the method for checking permissions will be
+     * registered on the gate…
+     */
+
 
     /*
      * When set to true, the method for checking permissions will be registered on the gate.
@@ -212,6 +234,12 @@ return [
         'order' => ['view', 'create', 'update', 'delete', 'export'],
         'user'  => ['view', 'create', 'update', 'delete', 'impersonate'],
         'roles'  => ['view', 'create', 'update', 'delete', 'impersonate'],
+        'mutation' => ['view', 'create', 'update', 'delete'],
+        'permission' => ['view', 'create', 'update', 'delete'],
+        'accouting' => ['view', 'create', 'update', 'delete'],
+        'report' => ['view', 'create', 'update', 'delete'],
+        'setting' => ['view', 'create', 'update', 'delete'],
+        'customer' => ['view', 'create', 'update', 'delete'],
         // add more modules later
     ],
 

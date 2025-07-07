@@ -52,7 +52,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'User',
-        href: '/admin/user',
+        href: '/admin/users',
         icon: UserRoundCog, 
     },
     
@@ -89,7 +89,7 @@ export function AppSidebar() {
                 <NavMain 
                     items={mainNavItems} 
                     activeClassName="bg-primary text-primary-foreground"
-                    hoverClassName="hover:bg-sidebar-hover"
+                    hoverClassName="hover:bg-primary/40"
                 />
             </SidebarContent>
 

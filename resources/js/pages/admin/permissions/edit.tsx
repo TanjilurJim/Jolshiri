@@ -3,19 +3,21 @@ import AppLayout from "@/layouts/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import PermissionForm from "./_form"
 
-export default function PermissionCreate({ modules }) {
+export default function PermissionEdit({ permission, current, modules }) {
   return (
     <AppLayout>
-      <Head title="Create Permission" />
+      <Head title="Edit Permission" />
 
       <Card>
         <CardHeader>
-          <CardTitle>Create Permission</CardTitle>
+          <CardTitle>Edit Permission</CardTitle>
         </CardHeader>
         <CardContent>
           <PermissionForm
+            current={current}
             modules={modules}
-            isEdit={false}
+            isEdit={true}
+            permissionId={permission.id}
           />
         </CardContent>
       </Card>

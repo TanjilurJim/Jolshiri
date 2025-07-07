@@ -1,142 +1,89 @@
-import { Head, useForm, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Pagination } from '@/components/ui/pagination';
+import AppLayout from '@/layouts/app-layout';
+import type { PageProps } from '@/types';
+import type { Paginated, User } from '@/types/models';
+import { MoreVertical, Plus, Search } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
 
-interface User {
-  id: number;
-  name: string;
-  designation: string;
-}
+type Props = PageProps & { users: Paginated<User> };
 
-interface PageProps {
-  users: User[];
-  designations: string[];
-}
+export default function UserIndex({ users }: Props) {
+    return (
+        <AppLayout>
+            <Head title="Users" />
 
-export default function UserIndex({ users, designations }: PageProps) {
-  const [editingId, setEditingId] = useState<number | null>(null);
-
-  const { data, setData, reset, post, put, delete: destroy, processing } = useForm({
-    name: '',
-    designation: '',
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (editingId) {
-      put(route('users.update', editingId), {
-        onSuccess: () => {
-          reset();
-          setEditingId(null);
-        },
-      });
-    } else {
-      post(route('users.store'), {
-        onSuccess: () => reset(),
-      });
-    }
-  };
-
-  const handleEdit = (user: User) => {
-    setEditingId(user.id);
-    setData({
-      name: user.name,
-      designation: user.designation,
-    });
-  };
-
-  const handleDelete = (id: number) => {
-    if (confirm('Are you sure?')) {
-      destroy(route('users.destroy', id));
-    }
-  };
-
-  return (
-    <AppLayout>
-      <Head title="User Management" />
-
-      <div className="max-w-3xl mx-auto mt-8 space-y-6">
-        {/* User Form */}
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  value={data.name}
-                  onChange={(e) => setData('name', e.target.value)}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label>Designation</Label>
-                <Select
-                  value={data.designation}
-                  onValueChange={(value) => setData('designation', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select designation" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {designations.map((des) => (
-                      <SelectItem key={des} value={des}>
-                        {des}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Button type="submit" disabled={processing}>
-                {editingId ? 'Update User' : 'Create User'}
-              </Button>
-
-              {editingId && (
-                <Button type="button" variant="secondary" onClick={() => { reset(); setEditingId(null); }}>
-                  Cancel
-                </Button>
-              )}
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* User List */}
-        <Card>
-          <CardContent className="p-6 space-y-3">
-            {users.length === 0 ? (
-              <p>No users available.</p>
-            ) : (
-              users.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center justify-between border-b py-2"
-                >
-                  <div>
-                    <p className="font-semibold">{user.name}</p>
-                    <p className="text-sm text-gray-500">{user.designation}</p>
-                  </div>
-                  <div className="space-x-2">
-                    <Button size="sm" onClick={() => handleEdit(user)}>
-                      Edit
+            <div className="mb-6 flex items-center justify-between">
+                <h1 className="text-2xl font-bold tracking-tight">Users</h1>
+                <Link href={route('admin.users.create')}>
+                    <Button>
+                        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/30 to-primary/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                        <Plus className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
+                        <span className="relative">Create User</span>
                     </Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(user.id)}>
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    </AppLayout>
-  );
+                </Link>
+            </div>
+
+            <Card>
+                <CardContent className="overflow-x-auto p-0">
+                    <table className="min-w-full border-collapse text-sm">
+                        <thead className="bg-muted text-muted-foreground">
+                            <tr>
+                                <th className="px-4 py-3 text-left font-medium">ID</th>
+                                <th className="px-4 py-3 text-left font-medium">Name</th>
+                                <th className="px-4 py-3 text-left font-medium">Email</th>
+                                <th className="px-4 py-3 text-left font-medium">Roles</th>
+                                <th className="px-4 py-3 text-left font-medium">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {users.data.map((user) => (
+                                <tr key={user.id} className="border-b hover:bg-primary/40">
+                                    <td className="px-4 py-3">{user.id}</td>
+                                    <td className="px-4 py-3">{user.name}</td>
+                                    <td className="px-4 py-3">{user.email}</td>
+                                    <td className="space-x-1 px-4 py-3">
+                                        {user.roles.map((role) => (
+                                            <span key={role.id} className="inline-block rounded bg-primary/20 px-2 py-0.5 text-xs text-primary">
+                                                {role.name}
+                                            </span>
+                                        ))}
+                                    </td>
+                                    <td className="space-x-2 px-4 py-3">
+                                        <Link href={route('admin.users.edit', user.id)}>
+                                            <Button size="sm" variant="outline">
+                                                Edit
+                                            </Button>
+                                        </Link>
+                                        <Link
+                                            as="button"
+                                            method="delete"
+                                            href={route('admin.users.destroy', user.id)}
+                                            onBefore={() => confirm(`Are you sure to delete ${user.name}?`)}
+                                        >
+                                            <Button size="sm" variant="destructive">
+                                                Delete
+                                            </Button>
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                            {users.data.length === 0 && (
+                                <tr>
+                                    <td colSpan={5} className="h-24 text-center text-muted-foreground">
+                                        No users found.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </CardContent>
+            </Card>
+
+            <div className="mt-6">
+                <Pagination links={users.links} />
+            </div>
+        </AppLayout>
+    );
 }
