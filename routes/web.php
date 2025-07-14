@@ -13,10 +13,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+
+    Route::get('civilianPlotRegistration', function () {
+        return Inertia::render('civilianPlotRegistration');
+    })->name('civilianPlotRegistration');
 });
 
 //role manager
 
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

@@ -1,11 +1,13 @@
-import '../css/app.css';
-import { Toaster } from 'sonner' 
 import { createInertiaApp } from '@inertiajs/react';
+import { Theme } from '@radix-ui/themes';
+import '@radix-ui/themes/styles.css';
+import '@sweetalert2/theme-dark/dark.css';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
+import { Toaster } from 'sonner';
+import 'sweetalert2/dist/sweetalert2.min.css';
+import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
-import 'sweetalert2/dist/sweetalert2.min.css';  
-import '@sweetalert2/theme-dark/dark.css'; 
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -15,12 +17,14 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-       root.render(
-      <>
-        <App {...props} />
-        <Toaster position="top-right" richColors />   {/* provider lives here */}
-      </>
-    )
+        root.render(
+            <>
+                <Theme>
+                    <App {...props} />
+                </Theme>
+                <Toaster position="top-right" richColors /> {/* provider lives here */}
+            </>,
+        );
     },
     progress: {
         color: '#4B5563',
