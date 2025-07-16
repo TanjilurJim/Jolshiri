@@ -1,32 +1,35 @@
 import ImageUpload from '@/components/image-upload';
 import InputField from '@/components/input-field';
 import { Button } from '@/components/ui/button';
-import { Civilian, ForAll } from '@/types/plotRegistration';
+import { ForAll, Officer } from '@/types/plotRegistration';
 import { useForm } from '@inertiajs/react';
 import { TextArea } from '@radix-ui/themes';
-import { Datepicker } from 'flowbite-react';
 import React from 'react';
 import { toast } from 'sonner';
 
 interface Props {
     isEdit: boolean;
-    current?: ForAll & Civilian;
+    current?: ForAll & Officer;
 }
 
-const CivilianForm = ({ current, isEdit }: Props) => {
+const OfficerForm = ({ current, isEdit }: Props) => {
     const { data, setData, post, put, processing, errors } = useForm({
-        image: current?.image || '',
-        memberId: current?.memberId || '',
+        ahsId: current?.ahsID || '',
         plotId: current?.plotId || '',
+        personalNumber: current?.personalNumber || '',
+        position: current?.position || '',
+        image: current?.image || '',
+
         name: current?.name || '',
-        husbandOrFatherName: current?.husbandOrFatherName || '',
+        husbandName: current?.husbandName || '',
         motherName: current?.motherName || '',
         dob: current?.dob || '',
         religion: current?.religion || 'Islam',
+        profession: current?.profession || '',
         nationality: current?.nationality || 'Bangladeshi',
-        nidPassport: current?.nidPassport || '',
         tin: current?.tin || '',
-        personalNumber: current?.personalNumber || '',
+        nid: current?.nid || '',
+        passport: current?.passport || '',
         email: current?.email || '',
         permanentAddress: current?.permanentAddress || '',
         presentAddress: current?.presentAddress || '',
@@ -34,36 +37,31 @@ const CivilianForm = ({ current, isEdit }: Props) => {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        const url = isEdit ? route('civilian.update', current?.memberId) : route('civilian.store');
+        const url = isEdit ? route('officer.update', current?.memberId) : route('officer.store');
 
         (isEdit ? put : post)(url, {
-            onSuccess: () => toast.success('Civilian information saved 🎉'),
+            onSuccess: () => toast.success('Officer information saved 🎉'),
             onError: () => toast.error('Something went wrong'),
         });
     };
 
-    const handleDateChange = (date: Date | null) => {
-        setData('dob', date ? date.toISOString() : '');
-    };
-
     return (
         <div>
-            
             <div className="space-y-6">
                 {/* Image Upload */}
                 <ImageUpload fieldName="image" currentImage={current?.image || ''} setData={setData} errorImage={errors.image || ''} />
 
-                {/* Member id and plot id */}
+                {/* AHS id and plot id */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {/* Member ID */}
+                    {/* AHS ID */}
                     <InputField
-                        label="Member ID"
+                        label="AHS ID"
                         labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                        placeholder="Enter Member ID"
-                        value={data.memberId || ''}
-                        errorName={errors.memberId || ''}
+                        placeholder="Enter AHS ID"
+                        value={data.ahsId || ''}
+                        errorName={errors.ahsId || ''}
                         errorStyle="mt-1 text-sm text-red-600"
-                        fieldName="memberId"
+                        fieldName="ahsId"
                         setData={setData}
                     />
 
@@ -80,6 +78,33 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     />
                 </div>
 
+                {/* Personal number and Position */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {/* Personal number */}
+                    <InputField
+                        label="Personal Number"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Enter your personal number"
+                        value={data.personalNumber || ''}
+                        errorName={errors.personalNumber || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="personalNumber"
+                        setData={setData}
+                    />
+
+                    {/* position */}
+                    <InputField
+                        label="position"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Enter the name of your position"
+                        value={data.position || ''}
+                        errorName={errors.position || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="position"
+                        setData={setData}
+                    />
+                </div>
+
                 {/* Name */}
                 <InputField
                     label="Name"
@@ -92,17 +117,17 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     setData={setData}
                 />
 
-                {/* Husband/Father and Mother Name */}
+                {/* Husband and Mother Name */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {/* Husband/Father Name */}
                     <InputField
-                        label="Husband/Father Name"
+                        label="Husband Name (only female)"
                         labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                        placeholder="Enter Husband/Father Name"
-                        value={data.husbandOrFatherName || ''}
-                        errorName={errors.husbandOrFatherName || ''}
+                        placeholder="Enter your husband name"
+                        value={data.husbandName || ''}
+                        errorName={errors.husbandName || ''}
                         errorStyle="mt-1 text-sm text-red-600"
-                        fieldName="husbandOrFatherName"
+                        fieldName="husbandName"
                         setData={setData}
                     />
 
@@ -119,21 +144,20 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     />
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                    {/* Date of Birth */}
-                    <div className="mb-6">
-                        <label className="mb-1 block text-sm font-medium text-gray-700">Date of Birth</label>
-                        <Datepicker
-                            id="default-datepicker"
-                            value={data.dob ? new Date(data.dob) : null}
-                            onChange={handleDateChange}
-                            autoHide={true}
-                            className={`block w-full rounded-lg border text-sm focus:border-blue-500 ${errors.dob ? 'border-red-500' : ''} transition duration-200 ease-in-out`}
-                            placeholder="Select date"
-                        />
-                        {errors.dob && <p className="mt-2 text-sm text-red-600">{errors.dob}</p>}
-                    </div>
+                {/* Date of Birth */}
+                <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Date of Birth</label>
+                    <input
+                        type="date"
+                        value={data.dob}
+                        onChange={(e) => setData('dob', e.target.value)}
+                        className={`w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none ${errors.dob ? 'border-red-500' : ''}`}
+                    />
+                    {errors.dob && <p className="mt-1 text-sm text-red-600">{errors.dob}</p>}
+                </div>
 
+                {/* Religion, Profession and Nationality */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     {/* Religion */}
                     <InputField
                         label="Religion"
@@ -143,6 +167,18 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                         errorName={errors.religion || ''}
                         errorStyle="mt-1 text-sm text-red-600"
                         fieldName="religion"
+                        setData={setData}
+                    />
+
+                    {/* Profession */}
+                    <InputField
+                        label="Profession"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Write your profession"
+                        value={data.profession || ''}
+                        errorName={errors.profession || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="profession"
                         setData={setData}
                     />
 
@@ -159,17 +195,17 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     />
                 </div>
 
-                {/* NID and TIN  */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {/* NID/Passport */}
+                {/* NID, TIN and Passport  */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {/* NID */}
                     <InputField
-                        label="NID/Passport"
+                        label="NID"
                         labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                        placeholder="Enter NID/Passport Number"
-                        value={data.nidPassport || ''}
-                        errorName={errors.nidPassport || ''}
+                        placeholder="Enter NID Number"
+                        value={data.nid || ''}
+                        errorName={errors.nid || ''}
                         errorStyle="mt-1 text-sm text-red-600"
-                        fieldName="nidPassport"
+                        fieldName="nid"
                         setData={setData}
                     />
 
@@ -182,6 +218,18 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                         errorName={errors.tin || ''}
                         errorStyle="mt-1 text-sm text-red-600"
                         fieldName="tin"
+                        setData={setData}
+                    />
+
+                    {/* Passport */}
+                    <InputField
+                        label="Passport"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Enter Passport Number"
+                        value={data.passport || ''}
+                        errorName={errors.passport || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="passport"
                         setData={setData}
                     />
                 </div>
@@ -260,6 +308,6 @@ const CivilianForm = ({ current, isEdit }: Props) => {
     );
 };
 
-export default CivilianForm;
+export default OfficerForm;
 
 const religions = ['Islam', 'Hinduism', 'Christianity', 'Buddhism'];

@@ -62,7 +62,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Officer Plot Registration',
-        href: '/officer-plot-registration',
+        href: '/officerPlotRegistration',
         icon: BookOpen,
     },
 ];

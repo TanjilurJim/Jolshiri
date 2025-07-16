@@ -17,6 +17,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('civilianPlotRegistration', function () {
         return Inertia::render('civilianPlotRegistration');
     })->name('civilianPlotRegistration');
+
+    Route::get('officerPlotRegistration', function () {
+        return Inertia::render('officerPlotRegistration');
+    })->name('officerPlotRegistration');
 });
 
 //role manager

@@ -1,17 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import CivilianForm from './civilianForm';
 
 import { type BreadcrumbItem } from '@/types';
+import OfficerForm from './officerForm';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Civilian Plot Registration',
-        href: '/civilianPlotRegistration',
+        title: 'Officer Plot Registration',
+        href: '/officerPlotRegistration',
     },
 ];
 
-const civilianPlotRegistration = () => {
+const officerPlotRegistration = () => {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Card>
@@ -19,11 +19,11 @@ const civilianPlotRegistration = () => {
                     <CardTitle>Fill-up all the information in Bangla</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <CivilianForm isEdit={false} />
+                    <OfficerForm isEdit={false} />
                 </CardContent>
             </Card>
         </AppLayout>
     );
 };
 
-export default civilianPlotRegistration;
+export default officerPlotRegistration;

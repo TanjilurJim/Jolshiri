@@ -9,6 +9,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
 
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
