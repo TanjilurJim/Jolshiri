@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ForAll, Officer } from '@/types/plotRegistration';
 import { useForm } from '@inertiajs/react';
 import { TextArea } from '@radix-ui/themes';
+import { Datepicker } from 'flowbite-react';
 import React from 'react';
 import { toast } from 'sonner';
 
@@ -34,6 +35,14 @@ const OfficerForm = ({ current, isEdit }: Props) => {
         permanentAddress: current?.permanentAddress || '',
         presentAddress: current?.presentAddress || '',
     });
+
+    const handleDateChange = (date: Date | null) => {
+        if (date) {
+            setData('dob', date.toISOString());
+        } else {
+            setData('dob', '');
+        }
+    };
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -94,7 +103,7 @@ const OfficerForm = ({ current, isEdit }: Props) => {
 
                     {/* position */}
                     <InputField
-                        label="position"
+                        label="Position"
                         labelStyle="mb-1 block text-sm font-medium text-gray-700"
                         placeholder="Enter the name of your position"
                         value={data.position || ''}
@@ -118,7 +127,7 @@ const OfficerForm = ({ current, isEdit }: Props) => {
                 />
 
                 {/* Husband and Mother Name */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     {/* Husband/Father Name */}
                     <InputField
                         label="Husband Name (only female)"
@@ -142,18 +151,20 @@ const OfficerForm = ({ current, isEdit }: Props) => {
                         fieldName="motherName"
                         setData={setData}
                     />
-                </div>
 
-                {/* Date of Birth */}
-                <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Date of Birth</label>
-                    <input
-                        type="date"
-                        value={data.dob}
-                        onChange={(e) => setData('dob', e.target.value)}
-                        className={`w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none ${errors.dob ? 'border-red-500' : ''}`}
-                    />
-                    {errors.dob && <p className="mt-1 text-sm text-red-600">{errors.dob}</p>}
+                    {/* Date of Birth */}
+                    <div>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">Date of Birth</label>
+                        <Datepicker
+                            id="default-datepicker"
+                            value={data.dob ? new Date(data.dob) : null}
+                            onChange={handleDateChange}
+                            autoHide={true}
+                            className={`block w-full rounded-lg border text-sm focus:border-blue-500 ${errors.dob ? 'border-red-500' : ''} transition duration-200 ease-in-out`}
+                            placeholder="Select date"
+                        />
+                        {errors.dob && <p className="mt-1 text-sm text-red-600">{errors.dob}</p>}
+                    </div>
                 </div>
 
                 {/* Religion, Profession and Nationality */}

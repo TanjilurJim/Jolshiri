@@ -42,13 +42,16 @@ const CivilianForm = ({ current, isEdit }: Props) => {
         });
     };
 
-    const handleDateChange = (date: Date | null) => {
-        setData('dob', date ? date.toISOString() : '');
+    const handleDateChange = (date: Date | null | undefined) => {
+        if (!date) {
+            setData('dob', '');
+        } else {
+            setData('dob', date.toISOString());
+        }
     };
 
     return (
         <div>
-            
             <div className="space-y-6">
                 {/* Image Upload */}
                 <ImageUpload fieldName="image" currentImage={current?.image || ''} setData={setData} errorImage={errors.image || ''} />
