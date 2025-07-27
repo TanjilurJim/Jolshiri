@@ -265,4 +265,4 @@ const CivilianForm = ({ current, isEdit }: Props) => {
 
 export default CivilianForm;
 
-const religions = ['Islam', 'Hinduism', 'Christianity', 'Buddhism'];
+// const religions = ['Islam', 'Hinduism', 'Christianity', 'Buddhism'];
