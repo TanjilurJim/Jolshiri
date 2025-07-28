@@ -1,7 +1,7 @@
 import ImageUpload from '@/components/image-upload';
 import InputField from '@/components/input-field';
 import { Button } from '@/components/ui/button';
-import { Civilian, ForAll } from '@/types/plotRegistration';
+import { Officer, ForAll } from '@/types/plotRegistration';
 import { useForm } from '@inertiajs/react';
 import { TextArea } from '@radix-ui/themes';
 import { Datepicker } from 'flowbite-react';
@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 interface Props {
     isEdit: boolean;
-    current?: ForAll & Civilian;
+    current?: ForAll & Officer;
 }
 
 // Define the officer data structure
@@ -29,6 +29,7 @@ interface OfficerData {
     email: string;
     permanentAddress: string;
     presentAddress: string;
+    phoneNumber: string;
 }
 
 const CivilianForm = ({ current, isEdit }: Props) => {
@@ -40,28 +41,29 @@ const CivilianForm = ({ current, isEdit }: Props) => {
         plotId: current?.plotId || '',
         officers: [{
             image: current?.image || '',
-            memberId: current?.memberId || '',
+            personalNumber: current?.personalNumber || '',
             name: current?.name || '',
-            husbandOrFatherName: current?.husbandOrFatherName || '',
+            fatherName: current?.fatherName || '',
             motherName: current?.motherName || '',
             dob: current?.dob || '',
             religion: current?.religion || 'Islam',
             nationality: current?.nationality || 'Bangladeshi',
-            nidPassport: current?.nidPassport || '',
+            nid: current?.nid || '',
+            passport: current?.passport || '',
             tin: current?.tin || '',
-            personalNumber: current?.personalNumber || '',
             email: current?.email || '',
             permanentAddress: current?.permanentAddress || '',
             presentAddress: current?.presentAddress || '',
+            phoneNumber: current?.phoneNumber || '',
         }],
     });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        const url = isEdit ? route('civilian.update', current?.memberId) : route('civilian.store');
+        const url = isEdit ? route('officer.update', current?.personalNumber) : route('officer.store');
 
         (isEdit ? put : post)(url, {
-            onSuccess: () => toast.success('Civilian information saved 🎉'),
+            onSuccess: () => toast.success('Officer information saved 🎉'),
             onError: () => toast.error('Something went wrong'),
         });
     };
@@ -97,10 +99,11 @@ const CivilianForm = ({ current, isEdit }: Props) => {
             nationality: 'Bangladeshi',
             nidPassport: '',
             tin: '',
-            personalNumber: '',
+            phoneNumber: '',
             email: '',
             permanentAddress: '',
             presentAddress: '',
+            personalNumber: '',
         };
         
         setData('officers', [...data.officers, newOfficer]);
@@ -144,7 +147,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
 
                 {/* Member ID */}
                 <InputField
-                    label="Member ID"
+                    label="Personal number"
                     labelStyle="mb-1 block text-sm font-medium text-gray-700"
                     placeholder="Enter Member ID"
                     value={officer.memberId || ''}
@@ -263,14 +266,14 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                 {/* Number and email */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <InputField
-                        label="Personal Number"
+                        label="Phone Number"
                         labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                        placeholder="Enter Personal Number"
-                        value={officer.personalNumber || ''}
-                        errorName={errors[`officers.${officerIndex}.personalNumber` as keyof typeof errors] || ''}
+                        placeholder="Enter Phone Number"
+                        value={officer.phoneNumber || ''}
+                        errorName={errors[`officers.${officerIndex}.phoneNumber` as keyof typeof errors] || ''}
                         errorStyle="mt-1 text-sm text-red-600"
-                        fieldName="personalNumber"
-                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'personalNumber', value)}
+                        fieldName="phoneNumber"
+                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'phoneNumber', value)}
                     />
 
                     <InputField
@@ -362,7 +365,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                         type="button"
                         variant="outline"
                         onClick={addOfficer}
-                        className="w-full max-w-xs"
+                        className="w-full max-w-xs border-1 border-[#5691B9] cursor-pointer hover:bg-[#5691B9] hover:text-white"
                     >
                         + Add Another Officer
                     </Button>
@@ -388,4 +391,4 @@ const CivilianForm = ({ current, isEdit }: Props) => {
 
 export default CivilianForm;
 
-const religions = ['Islam', 'Hinduism', 'Christianity', 'Buddhism'];
+// const religions = ['Islam', 'Hinduism', 'Christianity', 'Buddhism'];

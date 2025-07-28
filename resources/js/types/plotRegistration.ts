@@ -6,12 +6,12 @@ export interface ForAll {
     nationality: string;
     profession: string;
     tin: string;
-    personalNumber: string;
     email: string;
     permanentAddress: string;
     presentAddress: string;
     image: string;
     plotId: string;
+    phoneNumber: string;
 }
 
 export interface Civilian {
@@ -22,6 +22,7 @@ export interface Civilian {
 
 export interface Officer {
     ahsID: string;
+    personalNumber: string;
     fatherName: string;
     husbandName: string;
     nid: string;
