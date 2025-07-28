@@ -46,6 +46,24 @@ const CivilianForm = ({ current, isEdit }: Props) => {
         } else {
             addCivilian(data);
             toast.success('Civilian information saved 🎉');
+            setData({
+                image: '',
+                memberId: '',
+                plotId: '',
+                name: '',
+                husbandOrFatherName: '',
+                motherName: '',
+                dob: '',
+                religion: '',
+                nationality: '',
+                nidPassport: '',
+                tin: '',
+                phoneNumber: '',
+                email: '',
+                permanentAddress: '',
+                presentAddress: '',
+                profession: '',
+            });
         }
 
         // const url = isEdit ? route('civilian.update', current?.memberId) : route('civilian.store');
