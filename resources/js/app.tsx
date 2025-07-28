@@ -8,6 +8,7 @@ import { Toaster } from 'sonner';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
+import { CivilianProvider } from './lib/CivilianContext';
 
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -19,12 +20,12 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <>
+            <CivilianProvider>
                 <Theme>
                     <App {...props} />
                 </Theme>
                 <Toaster position="top-right" richColors /> {/* provider lives here */}
-            </>,
+            </CivilianProvider>,
         );
     },
     progress: {

@@ -20,6 +20,7 @@ const InputField = ({label, placeholder, labelStyle, value, errorName, errorStyl
                 onChange={(e) => setData(fieldName, e.target.value)}
                 className={`pt-5 pb-5 ${errorName ? 'border-red-500' : ''}`}
                 placeholder={placeholder}
+                required
             />
             {errorName && <p className={errorStyle}>{errorName}</p>}
         </div>

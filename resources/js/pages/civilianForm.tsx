@@ -1,6 +1,7 @@
 import ImageUpload from '@/components/image-upload';
 import InputField from '@/components/input-field';
 import { Button } from '@/components/ui/button';
+import { useCivilianContext } from '@/lib/CivilianContext';
 import { Civilian, ForAll } from '@/types/plotRegistration';
 import { useForm } from '@inertiajs/react';
 import { TextArea } from '@radix-ui/themes';
@@ -26,20 +27,33 @@ const CivilianForm = ({ current, isEdit }: Props) => {
         nationality: current?.nationality || 'Bangladeshi',
         nidPassport: current?.nidPassport || '',
         tin: current?.tin || '',
-        personalNumber: current?.personalNumber || '',
+        phoneNumber: current?.phoneNumber || '',
         email: current?.email || '',
         permanentAddress: current?.permanentAddress || '',
         presentAddress: current?.presentAddress || '',
+        profession: current?.profession || '',
     });
+
+    const { addCivilian, updateCivilian } = useCivilianContext();
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        const url = isEdit ? route('civilian.update', current?.memberId) : route('civilian.store');
+        console.log(data);
 
-        (isEdit ? put : post)(url, {
-            onSuccess: () => toast.success('Civilian information saved 🎉'),
-            onError: () => toast.error('Something went wrong'),
-        });
+        if (isEdit) {
+            updateCivilian(current?.memberId || '', data);
+            toast.success('Civilian information updated 🎉');
+        } else {
+            addCivilian(data);
+            toast.success('Civilian information saved 🎉');
+        }
+
+        // const url = isEdit ? route('civilian.update', current?.memberId) : route('civilian.store');
+
+        // (isEdit ? put : post)(url, {
+        //     onSuccess: () => toast.success('Civilian information saved 🎉'),
+        //     onError: () => toast.error('Something went wrong'),
+        // });
     };
 
     const handleDateChange = (date: Date | null | undefined) => {
@@ -51,7 +65,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
     };
 
     return (
-        <div>
+        <form onSubmit={submit}>
             <div className="space-y-6">
                 {/* Image Upload */}
                 <ImageUpload fieldName="image" currentImage={current?.image || ''} setData={setData} errorImage={errors.image || ''} />
@@ -83,17 +97,31 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     />
                 </div>
 
-                {/* Name */}
-                <InputField
-                    label="Name"
-                    labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                    placeholder="Enter your full name"
-                    value={data.name || ''}
-                    errorName={errors.name || ''}
-                    errorStyle="mt-1 text-sm text-red-600"
-                    fieldName="name"
-                    setData={setData}
-                />
+                {/* Name and profession */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {/* Name */}
+                    <InputField
+                        label="Name"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Enter your full name"
+                        value={data.name || ''}
+                        errorName={errors.name || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="name"
+                        setData={setData}
+                    />
+                    {/* profession */}
+                    <InputField
+                        label="Profession"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Enter your profession name"
+                        value={data.profession || ''}
+                        errorName={errors.profession || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="profession"
+                        setData={setData}
+                    />
+                </div>
 
                 {/* Husband/Father and Mother Name */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -122,6 +150,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     />
                 </div>
 
+                {/* Date of Birth, Religion, and Nationality */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     {/* Date of Birth */}
                     <div className="mb-6">
@@ -189,17 +218,17 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     />
                 </div>
 
-                {/* Number and email  */}
+                {/*Phone Number and email  */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {/* Personal Number */}
+                    {/* Phone Number */}
                     <InputField
-                        label="Personal Number"
+                        label="Phone Number"
                         labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                        placeholder="Enter Personal Number"
-                        value={data.personalNumber || ''}
-                        errorName={errors.personalNumber || ''}
+                        placeholder="Enter Phone Number"
+                        value={data.phoneNumber || ''}
+                        errorName={errors.phoneNumber || ''}
                         errorStyle="mt-1 text-sm text-red-600"
-                        fieldName="personalNumber"
+                        fieldName="phoneNumber"
                         setData={setData}
                     />
 
@@ -259,7 +288,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     </Button>
                 </div>
             </div>
-        </div>
+        </form>
     );
 };
 

@@ -61,6 +61,11 @@ const mainNavItems: NavItem[] = [
         icon: BookOpen,
     },
     {
+        title: 'View Civilian Data',
+        href:'/viewCivilianData',
+        icon: BookOpen,
+    },
+    {
         title: 'Officer Plot Registration',
         href: '/officerPlotRegistration',
         icon: BookOpen,

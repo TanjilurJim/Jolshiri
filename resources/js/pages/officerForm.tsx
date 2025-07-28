@@ -1,11 +1,11 @@
 import ImageUpload from '@/components/image-upload';
 import InputField from '@/components/input-field';
 import { Button } from '@/components/ui/button';
-import { Officer, ForAll } from '@/types/plotRegistration';
+import { ForAll, Officer } from '@/types/plotRegistration';
 import { useForm } from '@inertiajs/react';
 import { TextArea } from '@radix-ui/themes';
 import { Datepicker } from 'flowbite-react';
-import React, { useState } from 'react';
+import React from 'react';
 import { toast } from 'sonner';
 
 interface Props {
@@ -15,47 +15,58 @@ interface Props {
 
 // Define the officer data structure
 interface OfficerData {
-    image: string;
-    memberId: string;
     name: string;
-    husbandOrFatherName: string;
     motherName: string;
     dob: string;
     religion: string;
     nationality: string;
-    nidPassport: string;
+    profession: string;
     tin: string;
-    personalNumber: string;
     email: string;
     permanentAddress: string;
     presentAddress: string;
+    image: string;
+    plotId: string;
     phoneNumber: string;
+    ahsID: string;
+    personalNumber: string;
+    fatherName: string;
+    husbandName: string;
+    nid: string;
+    passport: string;
+    officeAddress: string;
+    position: string;
 }
 
-const CivilianForm = ({ current, isEdit }: Props) => {
-    // State for managing multiple officers
-    // (Removed unused officers state)
-
+const OfficerForm = ({ current, isEdit }: Props) => {
     const { data, setData, post, put, processing, errors } = useForm({
         ahsID: current?.ahsID || '',
         plotId: current?.plotId || '',
-        officers: [{
-            image: current?.image || '',
-            personalNumber: current?.personalNumber || '',
-            name: current?.name || '',
-            fatherName: current?.fatherName || '',
-            motherName: current?.motherName || '',
-            dob: current?.dob || '',
-            religion: current?.religion || 'Islam',
-            nationality: current?.nationality || 'Bangladeshi',
-            nid: current?.nid || '',
-            passport: current?.passport || '',
-            tin: current?.tin || '',
-            email: current?.email || '',
-            permanentAddress: current?.permanentAddress || '',
-            presentAddress: current?.presentAddress || '',
-            phoneNumber: current?.phoneNumber || '',
-        }],
+        officers: [
+            {
+                name: current?.name || '',
+                motherName: current?.motherName || '',
+                dob: current?.dob || '',
+                religion: current?.religion || 'Islam',
+                nationality: current?.nationality || 'Bangladeshi',
+                profession: current?.profession || '',
+                tin: current?.tin || '',
+                permanentAddress: current?.permanentAddress || '',
+                presentAddress: current?.presentAddress || '',
+                email: current?.email || '',
+                image: current?.image || '',
+                personalNumber: current?.personalNumber || '',
+                fatherName: current?.fatherName || '',
+                husbandName: current?.husbandName || '',
+                officeAddress: current?.officeAddress || '',
+                position: current?.position || '',
+                nid: current?.nid || '',
+                passport: current?.passport || '',
+                phoneNumber: current?.phoneNumber || '',
+                plotId: current?.plotId || '',
+                ahsID: current?.ahsID || '',
+            },
+        ],
     });
 
     const submit = (e: React.FormEvent) => {
@@ -82,7 +93,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
         const newOfficers = [...data.officers];
         newOfficers[officerIndex] = {
             ...newOfficers[officerIndex],
-            [fieldName]: value
+            [fieldName]: value,
         };
         setData('officers', newOfficers);
     };
@@ -90,22 +101,28 @@ const CivilianForm = ({ current, isEdit }: Props) => {
     const addOfficer = () => {
         const newOfficer: OfficerData = {
             image: '',
-            memberId: '',
             name: '',
-            husbandOrFatherName: '',
             motherName: '',
             dob: '',
             religion: 'Islam',
             nationality: 'Bangladeshi',
-            nidPassport: '',
+            profession: '',
             tin: '',
-            phoneNumber: '',
             email: '',
             permanentAddress: '',
             presentAddress: '',
+            phoneNumber: '',
             personalNumber: '',
+            fatherName: '',
+            husbandName: '',
+            nid: '',
+            passport: '',
+            officeAddress: '',
+            position: '',
+            plotId: '',
+            ahsID: '',
         };
-        
+
         setData('officers', [...data.officers, newOfficer]);
     };
 
@@ -117,20 +134,12 @@ const CivilianForm = ({ current, isEdit }: Props) => {
     };
 
     const renderOfficerForm = (officer: OfficerData, officerIndex: number) => (
-        <div key={officerIndex} className="border rounded-lg p-6 bg-gray-50 relative">
+        <div key={officerIndex} className="relative rounded-lg border bg-gray-50 p-6">
             {/* Officer Header */}
-            <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">
-                    Officer {officerIndex + 1}
-                </h3>
+            <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-800">Officer {officerIndex + 1}</h3>
                 {data.officers.length > 1 && (
-                    <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeOfficer(officerIndex)}
-                        className="text-xs"
-                    >
+                    <Button type="button" variant="destructive" size="sm" onClick={() => removeOfficer(officerIndex)} className="text-xs">
                         Remove Officer
                     </Button>
                 )}
@@ -138,23 +147,23 @@ const CivilianForm = ({ current, isEdit }: Props) => {
 
             <div className="space-y-6">
                 {/* Image Upload */}
-                <ImageUpload 
+                <ImageUpload
                     fieldName={`officers.${officerIndex}.image`}
-                    currentImage={officer.image || ''} 
+                    currentImage={officer.image || ''}
                     setData={(fieldName, value) => updateOfficerField(officerIndex, 'image', value)}
-                    errorImage={errors[`officers.${officerIndex}.image` as keyof typeof errors] || ''} 
+                    errorImage={errors[`officers.${officerIndex}.image` as keyof typeof errors] || ''}
                 />
 
-                {/* Member ID */}
+                {/* Personal Number */}
                 <InputField
-                    label="Personal number"
+                    label="Personal Number"
                     labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                    placeholder="Enter Member ID"
-                    value={officer.memberId || ''}
-                    errorName={errors[`officers.${officerIndex}.memberId` as keyof typeof errors] || ''}
+                    placeholder="Enter Personal Number"
+                    value={officer.personalNumber || ''}
+                    errorName={errors[`officers.${officerIndex}.personalNumber` as keyof typeof errors] || ''}
                     errorStyle="mt-1 text-sm text-red-600"
-                    fieldName="memberId"
-                    setData={(fieldName, value) => updateOfficerField(officerIndex, 'memberId', value)}
+                    fieldName="personalNumber"
+                    setData={(fieldName, value) => updateOfficerField(officerIndex, 'personalNumber', value)}
                 />
 
                 {/* Name */}
@@ -169,17 +178,28 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     setData={(fieldName, value) => updateOfficerField(officerIndex, 'name', value)}
                 />
 
-                {/* Husband/Father and Mother Name */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {/* Father Name, Husband Name and Mother Name */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <InputField
-                        label="Husband/Father Name"
+                        label="Father Name"
                         labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                        placeholder="Enter Husband/Father Name"
-                        value={officer.husbandOrFatherName || ''}
-                        errorName={errors[`officers.${officerIndex}.husbandOrFatherName` as keyof typeof errors] || ''}
+                        placeholder="Enter Father Name"
+                        value={officer.fatherName || ''}
+                        errorName={errors[`officers.${officerIndex}.fatherName` as keyof typeof errors] || ''}
                         errorStyle="mt-1 text-sm text-red-600"
-                        fieldName="husbandOrFatherName"
-                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'husbandOrFatherName', value)}
+                        fieldName="fatherName"
+                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'fatherName', value)}
+                    />
+
+                    <InputField
+                        label="Husband Name (if applicable)"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Enter Husband Name"
+                        value={officer.husbandName || ''}
+                        errorName={errors[`officers.${officerIndex}.husbandName` as keyof typeof errors] || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="husbandName"
+                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'husbandName', value)}
                     />
 
                     <InputField
@@ -207,9 +227,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                             placeholder="Select date"
                         />
                         {errors[`officers.${officerIndex}.dob` as keyof typeof errors] && (
-                            <p className="mt-2 text-sm text-red-600">
-                                {errors[`officers.${officerIndex}.dob` as keyof typeof errors]}
-                            </p>
+                            <p className="mt-2 text-sm text-red-600">{errors[`officers.${officerIndex}.dob` as keyof typeof errors]}</p>
                         )}
                     </div>
 
@@ -238,17 +256,53 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     />
                 </div>
 
-                {/* NID and TIN */}
+                {/* Profession and Position */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <InputField
-                        label="NID/Passport"
+                        label="Profession"
                         labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                        placeholder="Enter NID/Passport Number"
-                        value={officer.nidPassport || ''}
-                        errorName={errors[`officers.${officerIndex}.nidPassport` as keyof typeof errors] || ''}
+                        placeholder="Enter Profession"
+                        value={officer.profession || ''}
+                        errorName={errors[`officers.${officerIndex}.profession` as keyof typeof errors] || ''}
                         errorStyle="mt-1 text-sm text-red-600"
-                        fieldName="nidPassport"
-                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'nidPassport', value)}
+                        fieldName="profession"
+                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'profession', value)}
+                    />
+
+                    <InputField
+                        label="Position"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Enter Position"
+                        value={officer.position || ''}
+                        errorName={errors[`officers.${officerIndex}.position` as keyof typeof errors] || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="position"
+                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'position', value)}
+                    />
+                </div>
+
+                {/* NID, Passport and TIN */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <InputField
+                        label="NID"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Enter NID Number"
+                        value={officer.nid || ''}
+                        errorName={errors[`officers.${officerIndex}.nid` as keyof typeof errors] || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="nid"
+                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'nid', value)}
+                    />
+
+                    <InputField
+                        label="Passport"
+                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
+                        placeholder="Enter Passport Number"
+                        value={officer.passport || ''}
+                        errorName={errors[`officers.${officerIndex}.passport` as keyof typeof errors] || ''}
+                        errorStyle="mt-1 text-sm text-red-600"
+                        fieldName="passport"
+                        setData={(fieldName, value) => updateOfficerField(officerIndex, 'passport', value)}
                     />
 
                     <InputField
@@ -263,7 +317,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                     />
                 </div>
 
-                {/* Number and email */}
+                {/* Phone Number and Email */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <InputField
                         label="Phone Number"
@@ -289,7 +343,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                 </div>
 
                 {/* Address Fields */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div>
                         <label className="mb-1 block text-sm font-medium text-gray-700">Permanent Address</label>
                         <TextArea
@@ -300,9 +354,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                             placeholder="Enter your permanent address here..."
                         />
                         {errors[`officers.${officerIndex}.permanentAddress` as keyof typeof errors] && (
-                            <p className="mt-1 text-sm text-red-600">
-                                {errors[`officers.${officerIndex}.permanentAddress` as keyof typeof errors]}
-                            </p>
+                            <p className="mt-1 text-sm text-red-600">{errors[`officers.${officerIndex}.permanentAddress` as keyof typeof errors]}</p>
                         )}
                     </div>
 
@@ -316,9 +368,21 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                             placeholder="Enter your present address here..."
                         />
                         {errors[`officers.${officerIndex}.presentAddress` as keyof typeof errors] && (
-                            <p className="mt-1 text-sm text-red-600">
-                                {errors[`officers.${officerIndex}.presentAddress` as keyof typeof errors]}
-                            </p>
+                            <p className="mt-1 text-sm text-red-600">{errors[`officers.${officerIndex}.presentAddress` as keyof typeof errors]}</p>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">Office Address</label>
+                        <TextArea
+                            value={officer.officeAddress || ''}
+                            onChange={(e) => updateOfficerField(officerIndex, 'officeAddress', e.target.value)}
+                            className={errors[`officers.${officerIndex}.officeAddress` as keyof typeof errors] ? 'border-red-500' : ''}
+                            rows={5}
+                            placeholder="Enter your office address here..."
+                        />
+                        {errors[`officers.${officerIndex}.officeAddress` as keyof typeof errors] && (
+                            <p className="mt-1 text-sm text-red-600">{errors[`officers.${officerIndex}.officeAddress` as keyof typeof errors]}</p>
                         )}
                     </div>
                 </div>
@@ -339,7 +403,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                         value={data.ahsID || ''}
                         errorName={errors.ahsID || ''}
                         errorStyle="mt-1 text-sm text-red-600"
-                        fieldName="AHS ID"
+                        fieldName="ahsID"
                         setData={setData}
                     />
 
@@ -365,7 +429,7 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                         type="button"
                         variant="outline"
                         onClick={addOfficer}
-                        className="w-full max-w-xs border-1 border-[#5691B9] cursor-pointer hover:bg-[#5691B9] hover:text-white"
+                        className="w-full max-w-xs cursor-pointer border-1 border-[#5691B9] hover:bg-[#5691B9] hover:text-white"
                     >
                         + Add Another Officer
                     </Button>
@@ -389,6 +453,4 @@ const CivilianForm = ({ current, isEdit }: Props) => {
     );
 };
 
-export default CivilianForm;
-
-// const religions = ['Islam', 'Hinduism', 'Christianity', 'Buddhism'];
+export default OfficerForm;
