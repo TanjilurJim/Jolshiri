@@ -26,6 +26,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('viewCivilianData');
     })->name('viewCivilianData');
 
+    Route::get('viewOfficerData', function() {
+        return Inertia::render('viewOfficerData');
+    })->name('viewOfficerData');
+
 });
 
 //role manager

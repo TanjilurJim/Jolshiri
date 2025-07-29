@@ -70,6 +70,11 @@ const mainNavItems: NavItem[] = [
         href: '/officerPlotRegistration',
         icon: BookOpen,
     },
+    {
+        title: "View Officer Data",
+        href: '/viewOfficerData',
+        icon: BookOpen,
+    }
 ];
 
 const footerNavItems: NavItem[] = [];

@@ -1,6 +1,7 @@
 import ImageUpload from '@/components/image-upload';
 import InputField from '@/components/input-field';
 import { Button } from '@/components/ui/button';
+import { useOfficerContext } from '@/lib/officerContext';
 import { ForAll, Officer } from '@/types/plotRegistration';
 import { useForm } from '@inertiajs/react';
 import { TextArea } from '@radix-ui/themes';
@@ -69,14 +70,65 @@ const OfficerForm = ({ current, isEdit }: Props) => {
         ],
     });
 
+    const { addPlotWithOfficers, updatePlot, getPlot } = useOfficerContext();
+
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        const url = isEdit ? route('officer.update', current?.personalNumber) : route('officer.store');
+        if (isEdit) {
+            // For editing, update the entire plot with officers
+            updatePlot(data.plotId, {
+                plotId: data.plotId,
+                ahsID: data.ahsID,
+                officers: data.officers,
+            });
+            toast.success('Officer information updated 🎉');
+        } else {
+            // For adding new plot with officers
+            addPlotWithOfficers({
+                plotId: data.plotId,
+                ahsID: data.ahsID,
+                officers: data.officers,
+            });
+            toast.success('Officer information saved 🎉');
+            
+            // Reset form after saving
+            setData({
+                ahsID: '',
+                plotId: '',
+                officers: [
+                    {
+                        name: '',
+                        motherName: '',
+                        dob: '',
+                        religion: 'Islam',
+                        nationality: 'Bangladeshi',
+                        profession: '',
+                        tin: '',
+                        permanentAddress: '',
+                        presentAddress: '',
+                        email: '',
+                        image: '',
+                        personalNumber: '',
+                        fatherName: '',
+                        husbandName: '',
+                        officeAddress: '',
+                        position: '',
+                        nid: '',
+                        passport: '',
+                        phoneNumber: '',
+                        plotId: '',
+                        ahsID: '',
+                    },
+                ],
+            });
+        }
 
-        (isEdit ? put : post)(url, {
-            onSuccess: () => toast.success('Officer information saved 🎉'),
-            onError: () => toast.error('Something went wrong'),
-        });
+        // const url = isEdit ? route('officer.update', current?.personalNumber) : route('officer.store');
+
+        // (isEdit ? put : post)(url, {
+        //     onSuccess: () => toast.success('Officer information saved 🎉'),
+        //     onError: () => toast.error('Something went wrong'),
+        // });
     };
 
     const handleDateChange = (date: Date | null | undefined, officerIndex: number) => {
@@ -98,7 +150,7 @@ const OfficerForm = ({ current, isEdit }: Props) => {
         setData('officers', newOfficers);
     };
 
-    const addOfficer = () => {
+    const addNewOfficer = () => {
         const newOfficer: OfficerData = {
             image: '',
             name: '',
@@ -428,7 +480,7 @@ const OfficerForm = ({ current, isEdit }: Props) => {
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={addOfficer}
+                        onClick={addNewOfficer}
                         className="w-full max-w-xs cursor-pointer border-1 border-[#5691B9] hover:bg-[#5691B9] hover:text-white"
                     >
                         + Add Another Officer
