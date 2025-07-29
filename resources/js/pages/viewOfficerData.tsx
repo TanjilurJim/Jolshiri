@@ -31,19 +31,13 @@ const ViewOfficerData = () => {
     return (
         <AppLayout>
             <div className="space-y-6">
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-gray-800">Officer Data Management</h2>
                     <div className="flex gap-2">
-                        <Button
-                            variant={viewMode === 'plots' ? 'default' : 'outline'}
-                            onClick={() => setViewMode('plots')}
-                        >
+                        <Button variant={viewMode === 'plots' ? 'default' : 'outline'} onClick={() => setViewMode('plots')}>
                             View by Plots
                         </Button>
-                        <Button
-                            variant={viewMode === 'officers' ? 'default' : 'outline'}
-                            onClick={() => setViewMode('officers')}
-                        >
+                        <Button variant={viewMode === 'officers' ? 'default' : 'outline'} onClick={() => setViewMode('officers')}>
                             View All Officers
                         </Button>
                     </div>
@@ -53,17 +47,15 @@ const ViewOfficerData = () => {
                     // Plot-based view
                     <div className="space-y-8">
                         {plots.length === 0 ? (
-                            <p className="text-center text-gray-500 py-8">No plots registered yet.</p>
+                            <p className="py-8 text-center text-gray-500">No plots registered yet.</p>
                         ) : (
                             plots.map((plot) => (
-                                <div key={plot.plotId} className="border rounded-lg p-6 bg-white shadow-sm">
-                                    <div className="flex justify-between items-center mb-4">
+                                <div key={plot.plotId} className="rounded-lg border bg-white p-6 shadow-sm">
+                                    <div className="mb-4 flex items-center justify-between">
                                         <div>
-                                            <h3 className="text-lg font-semibold text-gray-800">
-                                                Plot ID: {plot.plotId}
-                                            </h3>
+                                            <h3 className="text-lg font-semibold text-gray-800">Plot ID: {plot.plotId}</h3>
                                             <p className="text-sm text-gray-600">
-                                                AHS ID: {plot.ahsID} | Officers: {plot.officers.length}
+                                                AHS ID: {plot.ahsID} | {plot.officers.length > 1 ? 'Officers' : 'Officer'}: {plot.officers.length}
                                             </p>
                                         </div>
                                         <Button
@@ -74,50 +66,50 @@ const ViewOfficerData = () => {
                                             Delete Plot
                                         </Button>
                                     </div>
-                                    
+
                                     <div className="overflow-x-auto">
                                         <table className="min-w-full border-collapse text-sm">
                                             <thead className="bg-gray-50">
                                                 <tr>
-                                                    <th className="px-4 py-3 text-left font-medium border">Image</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">Personal Number</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">Name</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">Father/Husband</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">Mother's Name</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">DOB</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">Religion</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">Position</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">Phone</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">Email</th>
-                                                    <th className="px-4 py-3 text-left font-medium border">Actions</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Image</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Personal Number</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Name</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Father/Husband</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Mother's Name</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">DOB</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Religion</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Position</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Phone</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Email</th>
+                                                    <th className="border px-4 py-3 text-left font-medium">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {plot.officers.map((officer) => (
                                                     <tr key={officer.personalNumber} className="hover:bg-gray-50">
-                                                        <td className="px-4 py-3 border">
+                                                        <td className="border px-4 py-3">
                                                             {officer.image ? (
-                                                                <img 
-                                                                    src={officer.image} 
-                                                                    alt={officer.name} 
-                                                                    className="h-12 w-12 rounded-full object-cover" 
+                                                                <img
+                                                                    src={officer.image}
+                                                                    alt={officer.name}
+                                                                    className="h-12 w-12 rounded-full object-cover"
                                                                 />
                                                             ) : (
-                                                                <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                                                                    <span className="text-gray-500 text-xs">No Image</span>
+                                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
+                                                                    <span className="text-xs text-gray-500">No Image</span>
                                                                 </div>
                                                             )}
                                                         </td>
-                                                        <td className="px-4 py-3 border">{officer.personalNumber}</td>
-                                                        <td className="px-4 py-3 border font-medium">{officer.name}</td>
-                                                        <td className="px-4 py-3 border">{officer.fatherName || officer.husbandName || 'N/A'}</td>
-                                                        <td className="px-4 py-3 border">{officer.motherName}</td>
-                                                        <td className="px-4 py-3 border">{formatDate(officer.dob)}</td>
-                                                        <td className="px-4 py-3 border">{officer.religion}</td>
-                                                        <td className="px-4 py-3 border">{officer.position || 'N/A'}</td>
-                                                        <td className="px-4 py-3 border">{officer.phoneNumber}</td>
-                                                        <td className="px-4 py-3 border">{officer.email}</td>
-                                                        <td className="px-4 py-3 border">
+                                                        <td className="border px-4 py-3">{officer.personalNumber}</td>
+                                                        <td className="border px-4 py-3 font-medium">{officer.name}</td>
+                                                        <td className="border px-4 py-3">{officer.fatherName || officer.husbandName || 'N/A'}</td>
+                                                        <td className="border px-4 py-3">{officer.motherName}</td>
+                                                        <td className="border px-4 py-3">{formatDate(officer.dob)}</td>
+                                                        <td className="border px-4 py-3">{officer.religion}</td>
+                                                        <td className="border px-4 py-3">{officer.position || 'N/A'}</td>
+                                                        <td className="border px-4 py-3">{officer.phoneNumber}</td>
+                                                        <td className="border px-4 py-3">{officer.email}</td>
+                                                        <td className="border px-4 py-3">
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
@@ -140,72 +132,68 @@ const ViewOfficerData = () => {
                     // Officer-based view (all officers in one table)
                     <div className="overflow-x-auto">
                         {officers.length === 0 ? (
-                            <p className="text-center text-gray-500 py-8">No officers registered yet.</p>
+                            <p className="py-8 text-center text-gray-500">No officers registered yet.</p>
                         ) : (
-                            <table className="min-w-full border-collapse text-sm bg-white rounded-lg shadow-sm">
+                            <table className="min-w-full border-collapse rounded-lg bg-white text-sm shadow-sm">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-4 py-3 text-left font-medium border">Image</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Plot ID</th>
-                                        <th className="px-4 py-3 text-left font-medium border">AHS ID</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Personal Number</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Name</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Father/Husband</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Mother's Name</th>
-                                        <th className="px-4 py-3 text-left font-medium border">DOB</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Religion</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Nationality</th>
-                                        <th className="px-4 py-3 text-left font-medium border">NID/Passport</th>
-                                        <th className="px-4 py-3 text-left font-medium border">TIN</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Position</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Phone</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Email</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Permanent Address</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Present Address</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Office Address</th>
-                                        <th className="px-4 py-3 text-left font-medium border">Actions</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Image</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Plot ID</th>
+                                        <th className="border px-4 py-3 text-left font-medium">AHS ID</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Personal Number</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Name</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Father/Husband</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Mother's Name</th>
+                                        <th className="border px-4 py-3 text-left font-medium">DOB</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Religion</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Nationality</th>
+                                        <th className="border px-4 py-3 text-left font-medium">NID/Passport</th>
+                                        <th className="border px-4 py-3 text-left font-medium">TIN</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Position</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Phone</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Email</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Permanent Address</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Present Address</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Office Address</th>
+                                        <th className="border px-4 py-3 text-left font-medium">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {officers.map((officer) => (
                                         <tr key={officer.personalNumber} className="hover:bg-gray-50">
-                                            <td className="px-4 py-3 border">
+                                            <td className="border px-4 py-3">
                                                 {officer.image ? (
-                                                    <img 
-                                                        src={officer.image} 
-                                                        alt={officer.name} 
-                                                        className="h-12 w-12 rounded-full object-cover" 
-                                                    />
+                                                    <img src={officer.image} alt={officer.name} className="h-12 w-12 rounded-full object-cover" />
                                                 ) : (
-                                                    <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                                                        <span className="text-gray-500 text-xs">No Image</span>
+                                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
+                                                        <span className="text-xs text-gray-500">No Image</span>
                                                     </div>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3 border font-medium">{officer.plotId}</td>
-                                            <td className="px-4 py-3 border">{officer.ahsID}</td>
-                                            <td className="px-4 py-3 border">{officer.personalNumber}</td>
-                                            <td className="px-4 py-3 border font-medium">{officer.name}</td>
-                                            <td className="px-4 py-3 border">{officer.fatherName || officer.husbandName || 'N/A'}</td>
-                                            <td className="px-4 py-3 border">{officer.motherName}</td>
-                                            <td className="px-4 py-3 border">{formatDate(officer.dob)}</td>
-                                            <td className="px-4 py-3 border">{officer.religion}</td>
-                                            <td className="px-4 py-3 border">{officer.nationality}</td>
-                                            <td className="px-4 py-3 border">{officer.nid || officer.passport || 'N/A'}</td>
-                                            <td className="px-4 py-3 border">{officer.tin || 'N/A'}</td>
-                                            <td className="px-4 py-3 border">{officer.position || 'N/A'}</td>
-                                            <td className="px-4 py-3 border">{officer.phoneNumber}</td>
-                                            <td className="px-4 py-3 border">{officer.email}</td>
-                                            <td className="px-4 py-3 border max-w-xs truncate" title={officer.permanentAddress}>
+                                            <td className="border px-4 py-3 font-medium">{officer.plotId}</td>
+                                            <td className="border px-4 py-3">{officer.ahsID}</td>
+                                            <td className="border px-4 py-3">{officer.personalNumber}</td>
+                                            <td className="border px-4 py-3 font-medium">{officer.name}</td>
+                                            <td className="border px-4 py-3">{officer.fatherName || officer.husbandName || 'N/A'}</td>
+                                            <td className="border px-4 py-3">{officer.motherName}</td>
+                                            <td className="border px-4 py-3">{formatDate(officer.dob)}</td>
+                                            <td className="border px-4 py-3">{officer.religion}</td>
+                                            <td className="border px-4 py-3">{officer.nationality}</td>
+                                            <td className="border px-4 py-3">{officer.nid || officer.passport || 'N/A'}</td>
+                                            <td className="border px-4 py-3">{officer.tin || 'N/A'}</td>
+                                            <td className="border px-4 py-3">{officer.position || 'N/A'}</td>
+                                            <td className="border px-4 py-3">{officer.phoneNumber}</td>
+                                            <td className="border px-4 py-3">{officer.email}</td>
+                                            <td className="max-w-xs truncate border px-4 py-3" title={officer.permanentAddress}>
                                                 {officer.permanentAddress}
                                             </td>
-                                            <td className="px-4 py-3 border max-w-xs truncate" title={officer.presentAddress}>
+                                            <td className="max-w-xs truncate border px-4 py-3" title={officer.presentAddress}>
                                                 {officer.presentAddress}
                                             </td>
-                                            <td className="px-4 py-3 border max-w-xs truncate" title={officer.officeAddress}>
+                                            <td className="max-w-xs truncate border px-4 py-3" title={officer.officeAddress}>
                                                 {officer.officeAddress || 'N/A'}
                                             </td>
-                                            <td className="px-4 py-3 border">
+                                            <td className="border px-4 py-3">
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
@@ -224,8 +212,8 @@ const ViewOfficerData = () => {
                 )}
 
                 {/* Summary */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div className="rounded-lg bg-gray-50 p-4">
+                    <div className="grid grid-cols-1 gap-4 text-center md:grid-cols-3">
                         <div>
                             <p className="text-2xl font-bold text-blue-600">{plots.length}</p>
                             <p className="text-sm text-gray-600">Total Plots</p>

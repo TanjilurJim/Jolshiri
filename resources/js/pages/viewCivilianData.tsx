@@ -12,27 +12,27 @@ const ViewCivilianData = () => {
     return (
         <AppLayout>
             <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-800">Civilian Data</h2>
+                <h2 className="text-xl font-semibold text-gray-800">Civilian Data Management</h2>
                 <div className="overflow-x-auto">
                     {' '}
                     {/* Add scroll container */}
                     <table className="min-w-full border-collapse text-sm">
-                        <thead className="bg-muted text-muted-foreground">
+                        <thead className="bg-gray-50">
                             <tr>
                                 <th className="px-4 py-3 text-left font-medium">IMG</th>
                                 <th className="px-4 py-3 text-left font-medium">ID</th>
                                 <th className="px-4 py-3 text-left font-medium">Name</th>
                                 <th className="px-4 py-3 text-left font-medium">Father/Husband Name</th>
                                 <th className="px-4 py-3 text-left font-medium">Mother's Name</th>
-                                <th className="px-4 py-3 text-left font-medium">Date of Birth</th>
+                                <th className="px-4 py-3 text-left font-medium">DOB</th>
                                 <th className="px-4 py-3 text-left font-medium">Religion</th>
                                 <th className="px-4 py-3 text-left font-medium">Nationality</th>
                                 <th className="px-4 py-3 text-left font-medium">NID/Passport</th>
                                 <th className="px-4 py-3 text-left font-medium">TIN</th>
-                                <th className="px-4 py-3 text-left font-medium">Phone Number</th>
+                                <th className="px-4 py-3 text-left font-medium">Phone</th>
                                 <th className="px-4 py-3 text-left font-medium">Email</th>
-                                <th className="px-4 py-3 text-left font-medium">Permanent Address</th>
-                                <th className="px-4 py-3 text-left font-medium">Present Address</th>
+                                <th className="px-4 py-3 text-left font-medium">Permanent Add.</th>
+                                <th className="px-4 py-3 text-left font-medium">Present Add.</th>
                                 <th className="px-4 py-3 text-left font-medium">Actions</th>
                             </tr>
                         </thead>
