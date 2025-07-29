@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { useCivilianContext } from '@/lib/CivilianContext';
 
 const ViewCivilianData = () => {
-    const { civilians, deleteCivilian } = useCivilianContext(); // Access context
+    const { civilians, deleteCivilian } = useCivilianContext();
 
     const handleDelete = (memberId: string) => {
         deleteCivilian(memberId);
