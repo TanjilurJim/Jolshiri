@@ -1,64 +1,97 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { useCivilianContext } from '@/lib/CivilianContext';
+import { useState } from 'react';
+import CivilianForm from './civilianForm';
+// import CivilianForm from '@/components/CivilianForm'; // Import your form component
 
 const ViewCivilianData = () => {
-    const { civilians, deleteCivilian } = useCivilianContext();
+    const { civilians, deleteCivilian, getCivilian } = useCivilianContext();
+    const [editingCivilian, setEditingCivilian] = useState<string | null>(null);
+    const [showEditForm, setShowEditForm] = useState(false);
 
     const handleDelete = (memberId: string) => {
         deleteCivilian(memberId);
     };
 
+    const handleEdit = (memberId: string) => {
+        setEditingCivilian(memberId);
+        setShowEditForm(true);
+    };
+
+    const handleCloseEdit = () => {
+        setEditingCivilian(null);
+        setShowEditForm(false);
+    };
+
+    const currentEditingCivilian = editingCivilian ? getCivilian(editingCivilian) : null;
+
     return (
         <AppLayout>
             <div className="space-y-6">
                 <h2 className="text-xl font-semibold text-gray-800">Civilian Data Management</h2>
+                
+                {/* Edit Form Modal/Section */}
+                {showEditForm && currentEditingCivilian && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg bg-white p-6">
+                            <div className="mb-4 flex items-center justify-between">
+                                <h3 className="text-lg font-semibold">Edit Civilian Information</h3>
+                                <Button
+                                    variant="outline"
+                                    onClick={handleCloseEdit}
+                                    className="cursor-pointer"
+                                >
+                                    ✕ Close
+                                </Button>
+                            </div>
+                            <CivilianForm
+                                isEdit={true} 
+                                current={currentEditingCivilian}
+                                onSuccess={handleCloseEdit} // Add this prop to close modal after successful edit
+                            />
+                        </div>
+                    </div>
+                )}
+
                 <div className="overflow-x-auto">
-                    {' '}
-                    {/* Add scroll container */}
                     <table className="min-w-full border-collapse text-sm">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-4 py-3 text-left font-medium">IMG</th>
-                                <th className="px-4 py-3 text-left font-medium">ID</th>
-                                <th className="px-4 py-3 text-left font-medium">Name</th>
-                                <th className="px-4 py-3 text-left font-medium">Father/Husband Name</th>
-                                <th className="px-4 py-3 text-left font-medium">Mother's Name</th>
-                                <th className="px-4 py-3 text-left font-medium">DOB</th>
-                                <th className="px-4 py-3 text-left font-medium">Religion</th>
-                                <th className="px-4 py-3 text-left font-medium">Nationality</th>
-                                <th className="px-4 py-3 text-left font-medium">NID/Passport</th>
-                                <th className="px-4 py-3 text-left font-medium">TIN</th>
-                                <th className="px-4 py-3 text-left font-medium">Phone</th>
-                                <th className="px-4 py-3 text-left font-medium">Email</th>
-                                <th className="px-4 py-3 text-left font-medium">Permanent Add.</th>
-                                <th className="px-4 py-3 text-left font-medium">Present Add.</th>
-                                <th className="px-4 py-3 text-left font-medium">Actions</th>
+                                {tableHeaders.map((tableHeader, index) => (
+                                    <th key={index} className="px-4 py-3 text-left font-medium">
+                                        {tableHeader}
+                                    </th>
+                                ))}
                             </tr>
                         </thead>
                         <tbody>
                             {civilians.map((civilian) => (
-                                <tr key={civilian.memberId}>
+                                <tr key={civilian.memberId} >
                                     <td className="">
-                                        <img src={civilian.image} alt={civilian.name} className="h-50% w-50% rounded-full" />
+                                        <img src={civilian.image} alt={civilian.name} className="h-1/2 w-1/2 rounded-full" />
                                     </td>
                                     <td className="px-4 py-3">{civilian.memberId}</td>
                                     <td className="px-4 py-3">{civilian.name}</td>
                                     <td className="px-4 py-3">{civilian.husbandOrFatherName}</td>
-                                    <td className="px-4 py-3">{civilian.motherName}</td>
-                                    <td className="px-4 py-3">{civilian.dob}</td>
-                                    <td className="px-4 py-3">{civilian.religion}</td>
                                     <td className="px-4 py-3">{civilian.nationality}</td>
                                     <td className="px-4 py-3">{civilian.nidPassport}</td>
+                                    <td className="px-4 py-3">{civilian.dob}</td>
                                     <td className="px-4 py-3">{civilian.tin}</td>
                                     <td className="px-4 py-3">{civilian.phoneNumber}</td>
                                     <td className="px-4 py-3">{civilian.email}</td>
                                     <td className="px-4 py-3">{civilian.permanentAddress}</td>
-                                    <td className="px-4 py-3">{civilian.presentAddress}</td>
-                                    <td className="px-4 py-3">
+                                    <td className="flex gap-1 px-4 py-3">
                                         <Button
                                             variant="outline"
-                                            className="border- cursor-pointer border-red-600 hover:bg-red-600"
+                                            className="border- hover:text-blue-600text-white cursor-pointer border-blue-600 bg-blue-600 text-white hover:bg-white hover:text-black"
+                                            onClick={() => handleEdit(civilian.memberId)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            className="border- cursor-pointer border-red-600 bg-red-600 text-white hover:bg-white hover:text-black"
                                             onClick={() => handleDelete(civilian.memberId)}
                                         >
                                             Delete
@@ -75,3 +108,18 @@ const ViewCivilianData = () => {
 };
 
 export default ViewCivilianData;
+
+const tableHeaders = [
+    'IMG',
+    'ID',
+    'Name',
+    'Father/Husband Name',
+    'Nationality',
+    'NID/Passport',
+    'DOB',
+    'TIN',
+    'Phone',
+    'Email',
+    'Present Add.',
+    'Actions',
+];

@@ -1,6 +1,7 @@
 import ImageUpload from '@/components/image-upload';
 import InputField from '@/components/input-field';
 import { Button } from '@/components/ui/button';
+import BDDateFormat from '@/lib/BDDateFormat';
 import { useCivilianContext } from '@/lib/CivilianContext';
 import { Civilian, ForAll } from '@/types/plotRegistration';
 import { useForm } from '@inertiajs/react';
@@ -12,9 +13,10 @@ import { toast } from 'sonner';
 interface Props {
     isEdit: boolean;
     current?: ForAll & Civilian;
+    onSuccess?: () => void; // Add this prop
 }
 
-const CivilianForm = ({ current, isEdit }: Props) => {
+const CivilianForm = ({ current, isEdit, onSuccess }: Props) => {
     const { data, setData, post, put, processing, errors } = useForm({
         image: current?.image || '',
         memberId: current?.memberId || '',
@@ -43,6 +45,10 @@ const CivilianForm = ({ current, isEdit }: Props) => {
         if (isEdit) {
             updateCivilian(current?.memberId || '', data);
             toast.success('Civilian information updated 🎉');
+            // Call onSuccess callback to close modal if provided
+            if (onSuccess) {
+                onSuccess();
+            }
         } else {
             addCivilian(data);
             toast.success('Civilian information saved 🎉');
@@ -64,6 +70,10 @@ const CivilianForm = ({ current, isEdit }: Props) => {
                 presentAddress: '',
                 profession: '',
             });
+            // Call onSuccess callback if provided
+            if (onSuccess) {
+                onSuccess();
+            }
         }
 
         // const url = isEdit ? route('civilian.update', current?.memberId) : route('civilian.store');
@@ -78,7 +88,12 @@ const CivilianForm = ({ current, isEdit }: Props) => {
         if (!date) {
             setData('dob', '');
         } else {
-            setData('dob', date.toISOString());
+            const day = date.getDate().toString().padStart(2, '0');
+            const month  = date.getMonth().toString().padStart(2, '0');
+            const year = date.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+            // setData('dob', BDDateFormat(date));
+            setData('dob', formattedDate);
         }
     };
 
