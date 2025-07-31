@@ -1,11 +1,11 @@
-import React from 'react';
-
-const BDDateFormat = ({date}: Date | null | undefined) => {
-    const day = date.getDate().toString.padStart(2, '0');
-    const month = date.getMonth().toString.padStart(2, '0');
-    const year = date.getFullYear().toString;
-    const formattedDate = `${day}/${month}/${year}`;
-    return formattedDate;
+const BDDateFormat = ({date}: {date: Date | null | undefined}) => {
+    if(!date){
+        return '';
+    }
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString();
+    return `${day}/${month}/${year}`;
 };
 
 export default BDDateFormat;

@@ -69,7 +69,7 @@ const ViewCivilianData = () => {
                             {civilians.map((civilian) => (
                                 <tr key={civilian.memberId} >
                                     <td className="">
-                                        <img src={civilian.image} alt={civilian.name} className="h-1/2 w-1/2 rounded-full" />
+                                        <img src={civilian.image} alt={civilian.name} className="rounded-full" />
                                     </td>
                                     <td className="px-4 py-3">{civilian.memberId}</td>
                                     <td className="px-4 py-3">{civilian.name}</td>

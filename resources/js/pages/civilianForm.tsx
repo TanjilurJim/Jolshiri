@@ -88,12 +88,8 @@ const CivilianForm = ({ current, isEdit, onSuccess }: Props) => {
         if (!date) {
             setData('dob', '');
         } else {
-            const day = date.getDate().toString().padStart(2, '0');
-            const month  = date.getMonth().toString().padStart(2, '0');
-            const year = date.getFullYear();
-            const formattedDate = `${day}/${month}/${year}`;
-            // setData('dob', BDDateFormat(date));
-            setData('dob', formattedDate);
+
+            setData('dob', BDDateFormat({date}));
         }
     };
 
@@ -190,7 +186,7 @@ const CivilianForm = ({ current, isEdit, onSuccess }: Props) => {
                         <label className="mb-1 block text-sm font-medium text-gray-700">Date of Birth</label>
                         <Datepicker
                             id="default-datepicker"
-                            value={data.dob ? new Date(data.dob) : null}
+                            value={data.dob ? new Date(data.dob) : undefined}
                             onChange={handleDateChange}
                             autoHide={true}
                             className={`block w-full rounded-lg border text-sm focus:border-blue-500 ${errors.dob ? 'border-red-500' : ''} transition duration-200 ease-in-out`}

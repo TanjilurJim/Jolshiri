@@ -163,7 +163,7 @@ const ViewOfficerData = () => {
                                         <tr key={officer.personalNumber} className="hover:bg-gray-50">
                                             <td className="border px-4 py-3">
                                                 {officer.image ? (
-                                                    <img src={officer.image} alt={officer.name} className="h-12 w-12 rounded-full object-cover" />
+                                                    <img src={officer.image} alt={officer.name} className="rounded-full object-cover" />
                                                 ) : (
                                                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
                                                         <span className="text-xs text-gray-500">No Image</span>
