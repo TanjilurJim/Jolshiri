@@ -74,6 +74,11 @@ const mainNavItems: NavItem[] = [
         title: "View Officer Data",
         href: '/viewOfficerData',
         icon: BookOpen,
+    },
+    {
+        title: "Add Plot",
+        href: '/viewPlotAdd',
+        icon: BookOpen,
     }
 ];
 

@@ -70,7 +70,7 @@ const OfficerForm = ({ current, isEdit }: Props) => {
         ],
     });
 
-    const { addPlotWithOfficers, updatePlot, getPlot } = useOfficerContext();
+    const { addPlotWithOfficers, updatePlot } = useOfficerContext();
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();

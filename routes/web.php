@@ -30,6 +30,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('viewOfficerData');
     })->name('viewOfficerData');
 
+    Route::get('viewPlotAdd', function(){
+        return Inertia::render('viewPlotAdd');
+    })->name('viewPlotAdd');
+
 });
 
 //role manager
