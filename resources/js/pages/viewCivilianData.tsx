@@ -3,7 +3,15 @@ import AppLayout from '@/layouts/app-layout';
 import { useCivilianContext } from '@/lib/CivilianContext';
 import { useState } from 'react';
 import CivilianForm from './civilianForm';
+import { BreadcrumbItem } from '@/types';
 // import CivilianForm from '@/components/CivilianForm'; // Import your form component
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Civilian Data',
+        href: '/viewCivilianData',
+    },
+];
 
 const ViewCivilianData = () => {
     const { civilians, deleteCivilian, getCivilian } = useCivilianContext();
@@ -27,7 +35,7 @@ const ViewCivilianData = () => {
     const currentEditingCivilian = editingCivilian ? getCivilian(editingCivilian) : null;
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <div className="space-y-6">
                 <h2 className="text-xl font-semibold text-gray-800">Civilian Data Management</h2>
                 

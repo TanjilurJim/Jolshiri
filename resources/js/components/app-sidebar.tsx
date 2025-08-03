@@ -77,7 +77,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: "Add Plot",
-        href: '/viewPlotAdd',
+        href: '/plotAdd',
         icon: BookOpen,
     }
 ];

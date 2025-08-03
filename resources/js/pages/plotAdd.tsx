@@ -1,23 +1,21 @@
+import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { type BreadcrumbItem } from '@/types';
 import PlotAddForm from './plotAddForm';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Civilian Plot Registration',
-        href: '/civilianPlotRegistration',
+        title: 'Add Plot',
+        href: '/plotAdd',
     },
 ];
 
-const viewPlotAdd = () => {
+const plotAdd = () => {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
+            <h2 className="mb-3 text-xl font-semibold text-gray-800">Fill-up all the information in Bangla</h2>
             <Card>
-                <CardHeader>
-                    <CardTitle>Fill-up all the information in Bangla</CardTitle>
-                </CardHeader>
                 <CardContent>
                     <PlotAddForm isEdit={false} />
                 </CardContent>
@@ -26,4 +24,4 @@ const viewPlotAdd = () => {
     );
 };
 
-export default viewPlotAdd;
+export default plotAdd;

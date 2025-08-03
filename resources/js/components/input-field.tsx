@@ -4,7 +4,7 @@ interface Props {
     label: string;
     placeholder: string;
     labelStyle: string;
-    value: string;
+    value: string | number;
     errorName: string;
     errorStyle: string;
     fieldName: string;

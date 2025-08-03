@@ -1,8 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import CivilianForm from './civilianForm';
-
 import { type BreadcrumbItem } from '@/types';
+import CivilianForm from './civilianForm';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,10 +13,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 const civilianPlotRegistration = () => {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
+            <h2 className="mb-3 text-xl font-semibold text-gray-800">Fill-up all the information in Bangla</h2>
             <Card>
-                <CardHeader>
-                    <CardTitle>Fill-up all the information in Bangla</CardTitle>
-                </CardHeader>
                 <CardContent>
                     <CivilianForm isEdit={false} />
                 </CardContent>

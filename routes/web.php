@@ -30,9 +30,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('viewOfficerData');
     })->name('viewOfficerData');
 
-    Route::get('viewPlotAdd', function(){
-        return Inertia::render('viewPlotAdd');
-    })->name('viewPlotAdd');
+    Route::get('plotAdd', function(){
+        return Inertia::render('plotAdd');
+    })->name('plotAdd');
 
 });
 

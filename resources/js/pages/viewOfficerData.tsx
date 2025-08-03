@@ -1,7 +1,15 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { useOfficerContext } from '@/lib/officerContext';
+import { BreadcrumbItem } from '@/types';
 import { useState } from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Officer Data',
+        href: '/viewOfficerData',
+    },
+];
 
 const ViewOfficerData = () => {
     const { plots, officers, deleteOfficer, deletePlot } = useOfficerContext();
@@ -29,7 +37,7 @@ const ViewOfficerData = () => {
     };
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-gray-800">Officer Data Management</h2>
