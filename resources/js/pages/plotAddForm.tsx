@@ -39,7 +39,7 @@ const PlotAddForm = ({ current, isEdit }: Props) => {
                 religion: current?.religion || '',
                 nationality: current?.nationality || '',
                 profession: current?.profession || '',
-                tin: current?.tin,
+                tin: current?.tin || '',
                 presentAddress: current?.presentAddress || '',
                 permanentAddress: current?.permanentAddress || '',
                 phoneNumber: current?.phoneNumber || '',
@@ -90,20 +90,24 @@ const PlotAddForm = ({ current, isEdit }: Props) => {
     // update owner field function will be here
 
     const addNewOwner = () => {
-        const newOwner: OwnerData = {
-            image: '',
-            name: '',
-            dob: '',
-            religion: '',
-            nationality: '',
-            profession: '',
-            tin: '',
-            email: '',
-            permanentAddress: '',
-            presentAddress: '',
-            phoneNumber: '',
-        };
-        setData('owners', [...data.owners, newOwner]);
+        if (data.owners.length >= 5) {
+            toast.error("Owner can't be greater than 5 for a single plot!");
+        } else {
+            const newOwner: OwnerData = {
+                image: '',
+                name: '',
+                dob: '',
+                religion: '',
+                nationality: '',
+                profession: '',
+                tin: '',
+                email: '',
+                permanentAddress: '',
+                presentAddress: '',
+                phoneNumber: '',
+            };
+            setData('owners', [...data.owners, newOwner]);
+        }
     };
 
     // Remove owner function will call here

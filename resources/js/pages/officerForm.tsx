@@ -90,7 +90,7 @@ const OfficerForm = ({ current, isEdit }: Props) => {
                 officers: data.officers,
             });
             toast.success('Officer information saved 🎉');
-            
+
             // Reset form after saving
             setData({
                 ahsID: '',
@@ -151,31 +151,35 @@ const OfficerForm = ({ current, isEdit }: Props) => {
     };
 
     const addNewOfficer = () => {
-        const newOfficer: OfficerData = {
-            image: '',
-            name: '',
-            motherName: '',
-            dob: '',
-            religion: 'Islam',
-            nationality: 'Bangladeshi',
-            profession: '',
-            tin: '',
-            email: '',
-            permanentAddress: '',
-            presentAddress: '',
-            phoneNumber: '',
-            personalNumber: '',
-            fatherName: '',
-            husbandName: '',
-            nid: '',
-            passport: '',
-            officeAddress: '',
-            position: '',
-            plotId: '',
-            ahsID: '',
-        };
+        if (data.officers.length >= 2) {
+            toast.error('Maximum 2 officers can purchase a single plot!');
+        } else {
+            const newOfficer: OfficerData = {
+                image: '',
+                name: '',
+                motherName: '',
+                dob: '',
+                religion: 'Islam',
+                nationality: 'Bangladeshi',
+                profession: '',
+                tin: '',
+                email: '',
+                permanentAddress: '',
+                presentAddress: '',
+                phoneNumber: '',
+                personalNumber: '',
+                fatherName: '',
+                husbandName: '',
+                nid: '',
+                passport: '',
+                officeAddress: '',
+                position: '',
+                plotId: '',
+                ahsID: '',
+            };
 
-        setData('officers', [...data.officers, newOfficer]);
+            setData('officers', [...data.officers, newOfficer]);
+        }
     };
 
     const removeOfficer = (officerIndex: number) => {
