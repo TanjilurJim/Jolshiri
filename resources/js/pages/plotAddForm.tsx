@@ -1,15 +1,18 @@
 import ImageUpload from '@/components/image-upload';
 import InputField from '@/components/input-field';
 import { Button } from '@/components/ui/button';
+import { usePlotContext } from '@/lib/addPlotContext';
 import { Owner, Plot } from '@/types/plotAdd';
 import { useForm } from '@inertiajs/react';
 import { TextArea } from '@radix-ui/themes';
 import { Datepicker } from 'flowbite-react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 interface Props {
     isEdit: boolean;
     current?: Owner & Plot;
+    id?: string;
 }
 
 // Define the owner data structure
@@ -27,8 +30,10 @@ interface OwnerData {
     phoneNumber: string;
 }
 
-const PlotAddForm = ({ current, isEdit }: Props) => {
-    const { data, setData, post, put, processing, errors } = useForm({
+const PlotAddForm = ({ current, isEdit, id }: Props) => {
+    const{addPlotWithOwners, updatePlot, getPlot} = usePlotContext();
+
+    const { data, setData, post, put, processing, errors, reset } = useForm({
         id: current?.id || '',
         price: current?.price || 0,
         owners: [
@@ -48,33 +53,69 @@ const PlotAddForm = ({ current, isEdit }: Props) => {
         ],
     });
 
+    // Load existing plot data if editing
+    useEffect(() => {
+        if(isEdit && id){
+            const existingPlot = getPlot(id);
+            if(existingPlot){
+                setData({
+                    id: existingPlot.id,
+                    price: existingPlot.price,
+                    owners: existingPlot.owners,
+                })
+            }
+        }
+    }, [isEdit, id, getPlot, setData]);
+
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (isEdit) {
-            // Update function will call here
-            toast.success('Plot information updated 🎉');
-        } else {
-            // Add function will call here
-            toast.success('Plot information saved 🎉');
-            setData({
-                id: '',
-                price: 0,
-                owners: [
-                    {
-                        image: '',
-                        name: '',
-                        dob: '',
-                        religion: '',
-                        nationality: '',
-                        profession: '',
-                        tin: '',
-                        presentAddress: '',
-                        phoneNumber: '',
-                        email: '',
-                    },
-                ],
-            });
+
+        try{
+            const plotData = {
+                id: data.id,
+                price: data.price,
+                owners: data.owners,
+            }
+
+            if (isEdit && id) {
+                updatePlot(id, plotData);
+                toast.success('Plot information updated 🎉');
+            } 
+            else {
+                // Add function will call here
+                addPlotWithOwners(plotData);
+                toast.success('Plot information saved 🎉');
+                setData({
+                    id: '',
+                    price: 0,
+                    owners: [
+                        {
+                            image: '',
+                            name: '',
+                            dob: '',
+                            religion: '',
+                            nationality: '',
+                            profession: '',
+                            tin: '',
+                            presentAddress: '',
+                            permanentAddress: '',
+                            phoneNumber: '',
+                            email: '',
+                        },
+                    ],
+                });
+            }
         }
+        catch(error){
+            if(error instanceof Error){
+                toast.error(error.message);
+            }
+            else{
+                toast.error('An error occurred while saving the plot');
+            }
+        }
+
+        
     };
 
     const handleDateChange = (date: Date | null | undefined, ownerIndex: number) => {
@@ -87,7 +128,14 @@ const PlotAddForm = ({ current, isEdit }: Props) => {
         setData('owners', newOwners);
     };
 
-    // update owner field function will be here
+    const updateOwnerField = (ownerIndex: number, field: keyof OwnerData, value: string) => {
+        const newOwners = [...data.owners]
+        newOwners[ownerIndex] = {
+            ...newOwners[ownerIndex],
+            [field]: value,
+        };
+        setData('owners', newOwners);
+    }
 
     const addNewOwner = () => {
         if (data.owners.length >= 5) {
@@ -207,7 +255,7 @@ const PlotAddForm = ({ current, isEdit }: Props) => {
                         errorName={errors[`owners.${ownerIndex}.profession` as keyof typeof errors] || ''}
                         errorStyle="mt-1 text-sm text-red-600"
                         fieldName="profession"
-                        setData={(fieldName, value) => updateOfficerField(ownerIndex, 'profession', value)}
+                        setData={(fieldName, value) => updateOwnerField(ownerIndex, 'profession', value)}
                     />
 
                     <InputField

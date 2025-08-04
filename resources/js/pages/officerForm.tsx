@@ -1,6 +1,7 @@
 import ImageUpload from '@/components/image-upload';
 import InputField from '@/components/input-field';
 import { Button } from '@/components/ui/button';
+import { usePlotContext } from '@/lib/addPlotContext';
 import { useOfficerContext } from '@/lib/officerContext';
 import { ForAll, Officer } from '@/types/plotRegistration';
 import { useForm } from '@inertiajs/react';
@@ -71,6 +72,9 @@ const OfficerForm = ({ current, isEdit }: Props) => {
     });
 
     const { addPlotWithOfficers, updatePlot } = useOfficerContext();
+    const {getAllPlotIds} = usePlotContext();
+    const availablePlotIds = getAllPlotIds();
+    // console.log(availablePlotIds);
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -463,17 +467,31 @@ const OfficerForm = ({ current, isEdit }: Props) => {
                         setData={setData}
                     />
 
-                    {/* Plot ID */}
-                    <InputField
-                        label="Plot ID"
-                        labelStyle="mb-1 block text-sm font-medium text-gray-700"
-                        placeholder="Enter Plot ID"
-                        value={data.plotId || ''}
-                        errorName={errors.plotId || ''}
-                        errorStyle="mt-1 text-sm text-red-600"
-                        fieldName="plotId"
-                        setData={setData}
-                    />
+                    {/* Plot ID Selection */}
+                    <div>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">Plot ID</label>
+                        <select
+                            value={data.plotId || ''}
+                            onChange={(e) => setData('plotId', e.target.value)}
+                            className={`block w-full rounded-lg border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 ${
+                                errors.plotId ? 'border-red-500' : 'border-gray-300'
+                            } transition duration-200 ease-in-out`}
+                        >
+                            <option value="">Select a Plot ID</option>
+                            {availablePlotIds && availablePlotIds.length > 0 ? (
+                                availablePlotIds.map((plotId) => (
+                                    <option key={plotId} value={plotId}>
+                                        {plotId}
+                                    </option>
+                                ))
+                            ) : (
+                                <option value="" disabled>
+                                    No plot IDs available
+                                </option>
+                            )}
+                        </select>
+                        {errors.plotId && <p className="mt-1 text-sm text-red-600">{errors.plotId}</p>}
+                    </div>
                 </div>
 
                 {/* Render all officers */}

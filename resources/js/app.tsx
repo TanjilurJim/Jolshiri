@@ -8,6 +8,7 @@ import { Toaster } from 'sonner';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
+import { PlotProvider } from './lib/addPlotContext';
 import { CivilianProvider } from './lib/CivilianContext';
 import { OfficerProvider } from './lib/officerContext';
 
@@ -20,14 +21,16 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <OfficerProvider>
-                <CivilianProvider>
-                    <Theme>
-                        <App {...props} />
-                    </Theme>
-                    <Toaster position="top-right" richColors />
-                </CivilianProvider>
-            </OfficerProvider>,
+            <PlotProvider>
+                <OfficerProvider>
+                    <CivilianProvider>
+                        <Theme>
+                            <App {...props} />
+                        </Theme>
+                        <Toaster position="top-right" richColors />
+                    </CivilianProvider>
+                </OfficerProvider>
+            </PlotProvider>,
         );
     },
     progress: {

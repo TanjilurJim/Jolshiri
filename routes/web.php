@@ -34,6 +34,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('plotAdd');
     })->name('plotAdd');
 
+    Route::get('viewAddedPlots', function(){
+        return Inertia::render('viewAddedPlots');
+    })->name('viewAddedPlots');
+
 });
 
 //role manager
