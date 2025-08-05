@@ -31,7 +31,7 @@ interface OwnerData {
 }
 
 const PlotAddForm = ({ current, isEdit, id }: Props) => {
-    const{addPlotWithOwners, updatePlot, getPlot} = usePlotContext();
+    const { addPlotWithOwners, updatePlot, getPlot } = usePlotContext();
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
         id: current?.id || '',
@@ -55,14 +55,14 @@ const PlotAddForm = ({ current, isEdit, id }: Props) => {
 
     // Load existing plot data if editing
     useEffect(() => {
-        if(isEdit && id){
+        if (isEdit && id) {
             const existingPlot = getPlot(id);
-            if(existingPlot){
+            if (existingPlot) {
                 setData({
                     id: existingPlot.id,
                     price: existingPlot.price,
                     owners: existingPlot.owners,
-                })
+                });
             }
         }
     }, [isEdit, id, getPlot, setData]);
@@ -70,18 +70,17 @@ const PlotAddForm = ({ current, isEdit, id }: Props) => {
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        try{
+        try {
             const plotData = {
                 id: data.id,
                 price: data.price,
                 owners: data.owners,
-            }
+            };
 
             if (isEdit && id) {
                 updatePlot(id, plotData);
                 toast.success('Plot information updated 🎉');
-            } 
-            else {
+            } else {
                 // Add function will call here
                 addPlotWithOwners(plotData);
                 toast.success('Plot information saved 🎉');
@@ -105,17 +104,13 @@ const PlotAddForm = ({ current, isEdit, id }: Props) => {
                     ],
                 });
             }
-        }
-        catch(error){
-            if(error instanceof Error){
+        } catch (error) {
+            if (error instanceof Error) {
                 toast.error(error.message);
-            }
-            else{
+            } else {
                 toast.error('An error occurred while saving the plot');
             }
         }
-
-        
     };
 
     const handleDateChange = (date: Date | null | undefined, ownerIndex: number) => {
@@ -129,13 +124,13 @@ const PlotAddForm = ({ current, isEdit, id }: Props) => {
     };
 
     const updateOwnerField = (ownerIndex: number, field: keyof OwnerData, value: string) => {
-        const newOwners = [...data.owners]
+        const newOwners = [...data.owners];
         newOwners[ownerIndex] = {
             ...newOwners[ownerIndex],
             [field]: value,
         };
         setData('owners', newOwners);
-    }
+    };
 
     const addNewOwner = () => {
         if (data.owners.length >= 5) {
@@ -168,7 +163,7 @@ const PlotAddForm = ({ current, isEdit, id }: Props) => {
 
     const renderOwnerForm = (owner: OwnerData, ownerIndex: number) => (
         <div key={ownerIndex} className="relative rounded-lg border bg-gray-50 p-6">
-            {/* Officer Header */}
+            {/* Owner Header */}
             <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-800">Owner {ownerIndex + 1}</h3>
                 {data.owners.length > 1 && (
@@ -357,6 +352,21 @@ const PlotAddForm = ({ current, isEdit, id }: Props) => {
                         fieldName="price"
                         setData={setData}
                     />
+                </div>
+
+                {/* Plot Location (Jolshiri Abason Map Embed) */}
+                <div className="pt-4">
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Plot Location (Jolshiri Abason)</label>
+                    {/* Google Map iframe */}
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29203.500561818993!2d90.4799648966646!3d23.80303439801751!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c9a7322f8301%3A0x81ebe1a8918e6a62!2sJalshiri%20Abason!5e0!3m2!1sen!2sbd!4v1754388080830!5m2!1sen!2sbd"
+                        className='w-full'
+                        height="450"
+                        style={{ border: 0 }}
+                        allowFullScreen={true}
+                        loading="lazy"
+                    ></iframe>
+                    <p className="mt-2 text-sm text-gray-600">This is the location of the plot at Jolshiri Abason.</p>
                 </div>
 
                 {/* Render all owner */}

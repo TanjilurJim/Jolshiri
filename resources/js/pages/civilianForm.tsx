@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 interface Props {
     isEdit: boolean;
     current?: ForAll & Civilian;
-    onSuccess?: () => void; // Add this prop
+    onSuccess?: () => void;
 }
 
 const CivilianForm = ({ current, isEdit, onSuccess }: Props) => {
